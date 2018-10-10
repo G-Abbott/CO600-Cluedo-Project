@@ -7,7 +7,7 @@
  *
  */
 public class Test {
-//change 2yggerbvkjer
+//change 2
 	/**
 	 * @param args
 	 */
