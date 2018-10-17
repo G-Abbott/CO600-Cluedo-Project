@@ -1,10 +1,16 @@
 package dice;
 
 public class Dice {
-	public static void main(String[] args) {
-		int numberofSides = 6;
-		int diceRoll = (int) (Math.random() * numberofSides) + 1;
+	private static int numberofSides;
+	private static int diceRoll;
+	
+	public static void rollDice() {
+		numberofSides = 6;
+		diceRoll = (int) (Math.random() * numberofSides) + 1;
 		System.out.println(diceRoll);
+	}
+		public static void main(String[] args) {
+		rollDice();
 	}
 
 }
