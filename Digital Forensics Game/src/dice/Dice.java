@@ -9,8 +9,11 @@ public class Dice {
 		diceRoll = (int) (Math.random() * numberofSides) + 1;
 		System.out.println(diceRoll);
 	}
-		public static void main(String[] args) {
-		rollDice();
+	public static void main(String[] args) {
+		int numberOfDice = 2;
+		for (int i = 0; i < numberOfDice; i++) {
+			rollDice();
+		}
 	}
 
 }
