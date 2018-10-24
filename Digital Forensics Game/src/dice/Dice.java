@@ -5,15 +5,12 @@ public class Dice {
 	private static int diceRoll;
 	
 	public static void rollDice() {
-		numberofSides = 6;
-		diceRoll = (int) (Math.random() * numberofSides) + 1;
+		numberofSides = 12;
+		diceRoll = (int) (Math.random() * numberofSides) + 2;
 		System.out.println(diceRoll);
 	}
 	public static void main(String[] args) {
-		int numberOfDice = 2;
-		for (int i = 0; i < numberOfDice; i++) {
-			rollDice();
-		}
+		rollDice();
 	}
 
 }
