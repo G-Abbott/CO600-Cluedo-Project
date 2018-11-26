@@ -1,4 +1,4 @@
 
 public class CO600 {
-//type
+//type2
 }
