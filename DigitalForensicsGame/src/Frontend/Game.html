@@ -2,13 +2,13 @@
 <html>
 <head>
 <style>
-
+body {
+    background-color: #568C6B;
+}
 </style>
 <body>
-
-<p><div id="h1"><b>Game</b></div></p>
-
-<canvas id="board" width="1040" height="840" style="border:1px solid #000000;">
+<!-- 26h by 28w -->
+<canvas id="board" width="1008" height="936" style="border:1px solid #000000;">
 </canvas>
 
 <script>
@@ -25,7 +25,19 @@ var sw = 40;
 
 var w = ~~ (board.width / sw);
 var h = ~~ (board.height / sh);
+drawing = new Image();
+drawing.src = "gameboard.png";
+var canvas = document.getElementById("board");
+var ctx = canvas.getContext("2d");
+drawing.onload = function() {
+	ctx.drawImage(drawing, 0, 0, 1008, 936);
+}
+</script>
 
+</body>
+</head>
+</html>
+<! --
 var canvas = document.getElementById("board");
 var ctx = canvas.getContext("2d");
 ctx.fillStyle = "#000000";
@@ -61,8 +73,4 @@ for (var x = xstart; x <= xfinish; x += 40)
 fillArea(40,960,30,800,'#FFBE33');
 fillArea(40,280,30,150,'red');
 drawBoard();
-</script>
-
-</body>
-</head>
-</html>
+-->
