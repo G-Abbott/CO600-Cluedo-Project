@@ -201,9 +201,9 @@ var currentCharacter = 0;
 var characters = undefined;
 var hold = undefined;
 var envelope = ['murderer', 'weapon', 'room'];
-var suspectCards = ['Colonel Mustard', 'Professor Plum', 'Mr Green', 'Mrs Peacock', 'Miss Scarlet', 'Dr Orchid'];
-var weaponCards = ['Knife', 'Candlestick', 'Revolver', 'Rope', 'Lead pipe', 'Spanner'];
-var roomCards = ['Hall', 'Lounge', 'Dining room', 'Kitchen', 'Ballroom', 'Conservatory', 'Billiard room', 'Library', 'Study'];
+var suspectCards = ['Student', 'Lecturer', 'Administrator', 'Technician'];
+var weaponCards = ['Data Theft', 'Fraud', 'Malware', 'Brute Force', 'Man-in-the-middle', 'Phishing'];
+var roomCards = ['Server Room', 'Seminar Room', 'Study Room', 'Main Hall', 'Convenors Office', 'Library', 'Admin Office', 'Lecture Theatre', 'Computer Suite'];
 var cardsCollated = [];
 var hands = undefined;
 var playersOut = [""];
@@ -367,15 +367,15 @@ function startGame(players)
         characters = players;
         hold = new Array(characters);
         if (players > 0) {
-                hold[0] = new Item("character", "Reverend Green", 0, 255, 0, 6, 0);
+                hold[0] = new Item("character", "Student", 0, 255, 0, 6, 0);
                 board[6][0].hold = 0;
                 board[6][0].obstacle = true;
         } if (players > 1) {
-                hold[1] = new Item("character", "Miss Scarlet", 255, 36, 0, 12, 0);
+                hold[1] = new Item("character", "Lecturer", 255, 36, 0, 12, 0);
                 board[12][0].hold = 1;
                 board[12][0].obstacle = true;
         } if (players > 2) {
-                hold[2] = new Item("character", "Mrs Peacock", 9, 84, 190, 6, 19);
+                hold[2] = new Item("character", "Administrator", 9, 84, 190, 6, 19);
                 board[6][19].hold = 2;
                 board[6][19].obstacle = true;
         }
@@ -404,15 +404,15 @@ function startGame(players)
         handOut(cardsCollated);
         // Send them to the clients
         updateDecks();
-        rooms[0] = new Room("Study", 0, 1, 5, 3);
-        rooms[1] = new Room("Hall", 1, 2, 9, 6, 12, 4);
-        rooms[2] = new Room("Lounge", 2, 1, 14, 5);
-        rooms[3] = new Room("Library", 3, 2, 6, 7, 1, 10);
-        rooms[4] = new Room("Dining room", 4, 2, 16, 7, 13, 9);
-        rooms[5] = new Room("Billiard room", 5, 2, 2, 10, 6, 13);
-        rooms[6] = new Room("Ballroom", 6, 2, 11, 13, 14, 15);
-        rooms[7] = new Room("Kitchen", 7, 1, 17, 14);
-        rooms[8] = new Room("Conservatory", 8, 1, 5, 17);
+        rooms[0] = new Room("Server Room", 0, 1, 5, 3);
+        rooms[1] = new Room("Seminar room", 1, 2, 9, 6, 12, 4);
+        rooms[2] = new Room("Study Room", 2, 1, 14, 5);
+        rooms[3] = new Room("Main Hall", 3, 2, 6, 7, 1, 10);
+        rooms[4] = new Room("Convenors Office", 4, 2, 16, 7, 13, 9);
+        rooms[5] = new Room("Library", 5, 2, 2, 10, 6, 13);
+        rooms[6] = new Room("Admin Office", 6, 2, 11, 13, 14, 15);
+        rooms[7] = new Room("Lecture Theatre", 7, 1, 17, 14);
+        rooms[8] = new Room("Computer Suite", 8, 1, 5, 17);
 }
 function nextTurn()
 {

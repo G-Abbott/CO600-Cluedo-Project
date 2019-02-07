@@ -29,9 +29,9 @@ var movedPeice = false;
 var selectingScenario = false;
 var scenarioContext = undefined;
 var scenario = ["", "", ""];
-var suspectCards = ['Colonel Mustard', 'Professor Plum', 'Mr Green', 'Mrs Peacock', 'Miss Scarlet', 'Dr Orchid'];
-var weaponCards = ['Knife', 'Candlestick', 'Revolver', 'Rope', 'Lead pipe', 'Spanner'];
-var roomCards = ['Hall', 'Lounge', 'Dining room', 'Kitchen', 'Ballroom', 'Conservatory', 'Billiard room', 'Library', 'Study'];
+var suspectCards = ['Student', 'Lecturer', 'Administrator', 'Technician'];
+var weaponCards = ['Data Theft', 'Fraud', 'Malware', 'Brute Force', 'Man-in-the-middle', 'Phishing'];
+var roomCards = ['Server Room', 'Seminar Room', 'Study Room', 'Main Hall', 'Convenors Office', 'Library', 'Admin Office', 'Lecture Theatre', 'Computer Suite'];
 var pickFrom = ["", "", ""];
 var pickingCards = false;
 const ROOM_CONST = 9;
@@ -149,55 +149,55 @@ function Room(name, index, doors, x1, y1, x2, y2)
         };
         this.show = function()
         {
-                if (this.name == "Study") {
+                if (this.name == "Server Room") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
                                 gridGraphics.stroke(0);
                                 gridGraphics.rect(4 * (GRID_WIDTH / COLS), 1 * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
                         };
-                } else if (this.name == "Hall") {
+                } else if (this.name == "Seminar Room") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
                                 gridGraphics.stroke(0);
                                 gridGraphics.rect(10 * (GRID_WIDTH / COLS), 4 * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
                         };
-                } else if (this.name == "Lounge") {
+                } else if (this.name == "Study Room") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
                                 gridGraphics.stroke(0);
                                 gridGraphics.rect(18 * (GRID_WIDTH / COLS), 3 * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
                         };
-                } else if (this.name == "Library") {
+                } else if (this.name == "Main Hall") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
                                 gridGraphics.stroke(0);
                                 gridGraphics.rect(3 * (GRID_WIDTH / COLS), 7 * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
                         };
-                } else if (this.name == "Dining room") {
+                } else if (this.name == "Convenors Office") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
                                 gridGraphics.stroke(0);
                                 gridGraphics.rect(18 * (GRID_WIDTH / COLS), 10 * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
                         };
-                } else if (this.name == "Billiard room") {
+                } else if (this.name == "Library") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
                                 gridGraphics.stroke(0);
                                 gridGraphics.rect(3 * (GRID_WIDTH / COLS), 13 * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
                         };
-                } else if (this.name == "Ballroom") {
+                } else if (this.name == "Admin Office") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
                                 gridGraphics.stroke(0);
                                 gridGraphics.rect(10 * (GRID_WIDTH / COLS), 18 * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
                         };
-                } else if (this.name == "Kitchen") {
+                } else if (this.name == "Lecture Theatre") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
                                 gridGraphics.stroke(0);
                                 gridGraphics.rect(18 * (GRID_WIDTH / COLS), 18 * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
                         };
-                } else if (this.name == "Conservatory") {
+                } else if (this.name == "Computer Suite") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
                                 gridGraphics.stroke(0);
@@ -322,27 +322,27 @@ function startGame(players)
         characters = players;
         hold = new Array(characters);
         if (players > 0) {
-                hold[0] = new Item("character", "Reverend Green", 0, 255, 0, 6, 0);
+                hold[0] = new Item("character", "Student", 0, 255, 0, 6, 0);
                 board[6][0].hold = 0;
                 board[6][0].obstacle = true;    
         } if (players > 1) {
-                hold[1] = new Item("character", "Miss Scarlet", 255, 36, 0, 12, 0);
+                hold[1] = new Item("character", "Lecturer", 255, 36, 0, 12, 0);
                 board[12][0].hold = 1;
                 board[12][0].obstacle = true;
         } if (players > 2) {
-                hold[2] = new Item("character", "Mrs Peacock", 9, 84, 190, 6, 19);
+                hold[2] = new Item("character", "Administrator", 9, 84, 190, 6, 19);
                 board[6][19].hold = 2;
                 board[6][19].obstacle = true;
         }
-        rooms[0] = new Room("Study", 0, 1, 5, 3);
-        rooms[1] = new Room("Hall", 1, 2, 9, 6, 12, 4);
-        rooms[2] = new Room("Lounge", 2, 1, 14, 5);
-        rooms[3] = new Room("Library", 3, 2, 6, 7, 1, 10);
-        rooms[4] = new Room("Dining room", 4, 2, 16, 7, 13, 9);
-        rooms[5] = new Room("Billiard room", 5, 2, 2, 10, 6, 13);
-        rooms[6] = new Room("Ballroom", 6, 2, 11, 13, 14, 15);
-        rooms[7] = new Room("Kitchen", 7, 1, 17, 14);
-        rooms[8] = new Room("Conservatory", 8, 1, 5, 17);
+        rooms[0] = new Room("Server Room", 0, 1, 5, 3);
+        rooms[1] = new Room("Seminar room", 1, 2, 9, 6, 12, 4);
+        rooms[2] = new Room("Study Room", 2, 1, 14, 5);
+        rooms[3] = new Room("Main Hall", 3, 2, 6, 7, 1, 10);
+        rooms[4] = new Room("Convenors Office", 4, 2, 16, 7, 13, 9);
+        rooms[5] = new Room("Library", 5, 2, 2, 10, 6, 13);
+        rooms[6] = new Room("Admin Office", 6, 2, 11, 13, 14, 15);
+        rooms[7] = new Room("Lecture Theatre", 7, 1, 17, 14);
+        rooms[8] = new Room("Computer Suite", 8, 1, 5, 17);
 }
 function generateBoard() 
 {
@@ -601,15 +601,15 @@ function drawBoardDetails()
         gridGraphics.noStroke();
         gridGraphics.textSize(12);
         gridGraphics.stroke(0);
-        gridGraphics.text("Study", 10, 20);
-        gridGraphics.text("Hall", 200, 20);
-        gridGraphics.text("Lounge", 420, 20);
-        gridGraphics.text("Library", 10, 140);
-        gridGraphics.text("Dining room", 400, 210);
-        gridGraphics.text("Billiard room", 10, 280);
-        gridGraphics.text("Conservatory", 10, 425);
-        gridGraphics.text("Ballroom", 200, 360);
-        gridGraphics.text("Kitchen", 400, 380);
+        gridGraphics.text("Server Room", 10, 20);
+        gridGraphics.text("Seminar room", 200, 20);
+        gridGraphics.text("Study Room", 420, 20);
+        gridGraphics.text("Main Hall", 10, 140);
+        gridGraphics.text("Convenors Office", 400, 210);
+        gridGraphics.text("Library", 10, 280);
+        gridGraphics.text("Admin Office", 10, 425);
+        gridGraphics.text("Lecture Theatre", 200, 360);
+        gridGraphics.text("Computer Suite", 400, 380);
         // Doors
         gridGraphics.stroke(255, 255, 255);
         gridGraphics.strokeWeight(4);
