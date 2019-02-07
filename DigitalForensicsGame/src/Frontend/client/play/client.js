@@ -333,7 +333,6 @@ function startGame(players)
                 hold[2] = new Item("character", "Administrator", 9, 84, 190, 6, 19);
                 board[6][19].hold = 2;
                 board[6][19].obstacle = true;
-        }
         } if (players > 3) {
                 hold[2] = new Item("character", "Technician", 162, 0, 204, 14, 19);
                 board[14][19].hold = 3;
