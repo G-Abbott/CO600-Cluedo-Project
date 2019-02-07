@@ -514,9 +514,9 @@ function draw()
                         rooms[i].show();
                 }
         };
-        image(gridGraphics, 0, 0);
-        image(charactersGraphics, 0, 480);
-        image(majorMiscGraphics, 480, 0);
+        copy(gridGraphics, 0, 0, 480, 480, 0, 0, 480, 480);
+        copy(charactersGraphics, 0, 0, 480, 24, 0, 480, 480, 24);
+        copy(majorMiscGraphics, 0, 0, 480, 480, 480, 0, 480, 480);
 }
 function drawBoardDetails() 
 {

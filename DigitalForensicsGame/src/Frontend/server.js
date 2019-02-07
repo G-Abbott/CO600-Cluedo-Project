@@ -5,7 +5,7 @@ var app = express();
 app.use(express.static('client'));
 
 // Setup function
-var server = app.listen(process.env.PORT, function()
+var server = app.listen(4444, function()
 {
         console.log('Started serving');
         generateBoard();
