@@ -334,6 +334,12 @@ function startGame(players)
                 board[6][19].hold = 2;
                 board[6][19].obstacle = true;
         }
+        } if (players > 3) {
+                hold[2] = new Item("character", "Technician", 162, 0, 204, 14, 19);
+                board[14][19].hold = 3;
+                board[14][19].obstacle = true;
+        }
+        // (name, index, doors, x1, y1, x2, y2)
         rooms[0] = new Room("Server Room", 0, 1, 5, 3);
         rooms[1] = new Room("Seminar room", 1, 2, 9, 6, 12, 4);
         rooms[2] = new Room("Study Room", 2, 1, 14, 5);
@@ -520,31 +526,31 @@ function draw()
 }
 function drawBoardDetails() 
 {
-        // Study
+        // Server Room
         gridGraphics.fill(0, 0, 0);
         gridGraphics.strokeWeight(1);
         gridGraphics.line(144 -1, 0 -1, 144 -1, 72 -1);
         gridGraphics.line(0 -1, 72 -1, 144 -1, 72 -1);
         gridGraphics.fill(255);
         gridGraphics.rect(0 -1, 0 -1, 144 -1, 72 -1);
-        // Hall
+        // Seminar Room
         gridGraphics.fill(0, 0, 0);
         gridGraphics.line(192 , 0 , 192 , 144 - 1);
         gridGraphics.line(288-1, 0 , 288-1, 144 - 1);
         gridGraphics.line(192 - 1, 144 - 2, 288 - 1, 144 - 2);
         gridGraphics.fill(255);
         gridGraphics.rect( 192  , 0 - 1, 96 - 2, 144 - 1);
-        // Lounge
+        // Study Room
         gridGraphics.fill(0, 0, 0);
         gridGraphics.line(336, 0, 336, 120 -1);
         gridGraphics.line(336, 120-1, 480, 120-1);
         gridGraphics.fill(255);
         gridGraphics.rect(336, 0 -1, 144 -1, 120-1);
-        // Envolope
+        // Middle
         gridGraphics.fill(85,107,47);
         gridGraphics.rect(192 -1, 168-1, 96, 120);
         gridGraphics.strokeWeight(1);
-        // Library
+        // Convenors Office
         gridGraphics.fill(0,0,0);
         gridGraphics.line(0, 120, 120 - 1, 120);
         gridGraphics.line(120 -2, 120, 120 -2, 144);
@@ -557,7 +563,7 @@ function drawBoardDetails()
         gridGraphics.rect(-1, 120, 120-1, 120 -2);
         gridGraphics.stroke(255);
         gridGraphics.rect(120-3, 144+1, 24, 72-4);
-        // Dining room
+        // Computer Suite
         gridGraphics.fill(0);
         gridGraphics.stroke(0);
         gridGraphics.line(336, 192, 480, 192);
@@ -565,14 +571,14 @@ function drawBoardDetails()
         gridGraphics.line(336, 288 -2, 480, 288 -2);
         gridGraphics.fill(255);
         gridGraphics.rect(336, 192, 144 -1, 96 -2);
-        // Billiard room
+        // Lecutre Theater
         gridGraphics.fill(0);
         gridGraphics.line(0, 264, 144 -1, 264);
         gridGraphics.line(144 -2, 264, 144-2, 360 -1);
         gridGraphics.line(0, 360 -2, 144 -2, 360 -2);
         gridGraphics.fill(255);
         gridGraphics.rect(0 -1, 264, 144 -1, 96 -2);
-        // Conservatory
+        // Admin Office
         gridGraphics.fill(0);
         gridGraphics.line(0, 408, 120, 408);
         gridGraphics.line(120, 408, 120, 432);
@@ -582,7 +588,7 @@ function drawBoardDetails()
         gridGraphics.stroke(255);
         gridGraphics.rect(0, 408+1, 120 -2, 72 -3);
         gridGraphics.rect(120 -2, 432 +1 , 24 -1, 48 -3);
-        // Ballroom
+        // Library
         gridGraphics.fill(0);
         gridGraphics.stroke(0);
         gridGraphics.line(192, 360, 312 -1, 360);
@@ -590,7 +596,7 @@ function drawBoardDetails()
         gridGraphics.line(192, 360, 192, 480);
         gridGraphics.fill(255);
         gridGraphics.rect(192, 336, 144 -2, 144 -1);
-        // Kitchen
+        // Main Hall
         gridGraphics.fill(0);
         gridGraphics.line(384, 360, 480, 360);
         gridGraphics.line(384, 360, 384, 480);
