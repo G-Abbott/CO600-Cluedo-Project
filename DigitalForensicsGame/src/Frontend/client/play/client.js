@@ -1,3 +1,5 @@
+p5.dom;
+
 // Declaring variables & constants & objects
 var canvas = undefined;
 const CANVAS_WIDTH = 480 + 480 ;
@@ -469,9 +471,22 @@ function draw()
                 }
         }
         if (gameState == "inProgress" && gotClientHoldValue) {
+        	
+        	button = createButton(String.fromCharCode(30));
+        	button.position(800, 105);
+        	
+        	button = createButton(String.fromCharCode(31));
+        	button.position(800, 155);
+        	
+        	button = createButton(String.fromCharCode(17));
+        	button.position(750, 135);
+        	
+        	button = createButton(String.fromCharCode(16));
+        	button.position(850, 135);
                 if (selectingScenario) {
                         majorMiscGraphics.text('MAKING ACCUSATION', 30, 30);
                         majorMiscGraphics.text('Selection ONE card from each category', 30, 50);
+              
                         if (scenario[0].length < 1) {
                                 // List suspects
                                 for (var i = 0; i < suspectCards.length; i++) {
