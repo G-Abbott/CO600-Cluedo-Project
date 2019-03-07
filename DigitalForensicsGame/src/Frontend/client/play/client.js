@@ -316,27 +316,25 @@ function setup()
         charactersGraphics = createGraphics(CHARACTERS_WIDTH, CHARACTERS_HEIGHT);
         majorMiscGraphics = createGraphics(MAJOR_MISC_WIDTH, MAJOR_MISC_HEIGHT);
         //Define buttons, begin by hiding them
+        //Ready Button
         readyB = createButton('Click here when ready');
         readyB.position(535,110);
         readyB.mousePressed(ready);
         readyB.hide();
-
+		//Arrow buttons
         buttonUp = createButton(String.fromCharCode(30));
         buttonUp.position(800, 105);
         buttonUp.hide();
-
         buttonDown = createButton(String.fromCharCode(31));
         buttonDown.position(800, 155);
         buttonDown.hide();
-
         buttonLeft = createButton(String.fromCharCode(17));
         buttonLeft.position(750, 135);
         buttonLeft.hide();
-
         buttonRight = createButton(String.fromCharCode(16));
         buttonRight.position(850, 135);
         buttonRight.hide();
-
+		//End turn button
         endTurnB = createButton('End Turn');
         endTurnB.position(400,480);
         endTurnB.mousePressed(endTurn);
