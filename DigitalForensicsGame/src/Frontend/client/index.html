@@ -1,61 +1,97 @@
 <!DOCTYPE html>
-<html>
-<head>
-<style>
-body {
-    background-color: black;
-}
-.h1 {
-    color: white;
-    text-align: center;
-    padding: 200px 0;
-    text-transform: uppercase;
-    font-size:50px;
-}
-.button {
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-</style>
+<html lang="en">
+  	<head>
+   	 	<meta charset="utf-8">
+   	 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    	<meta name="description" content="">
+    	<title>Digital Forensics Detective</title>
+
+        <!-- Bootstrap Imports --> 
+  	  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+
+	</head> 
 <body>
 
-<p><div class="h1"><b>Digital <span style="color:red">Forensics</span> Detective</b></p>
+    <!-- Navigation Bar --> 
+	<nav class="navbar navbar-expand-lg navbar-light bg-dark">
+ 		 <a class="navbar-brand" href="#"><b><span style="color:white">Digital <span style="color:red">Forensics</span> Detective</span></b></a>
+        
+        <!-- Button for navbar menu -->
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    		<span class="navbar-toggler-icon"></span>
+ 		 </button>
+ 		 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+   			 <div class="navbar-nav">
+   			    <!-- Toggle modal box for about information --> 
+      			<a data-toggle = "modal" data-target= "#about" class="nav-link"><span style="color:white">About</span></a>
+    		</div>
+ 		 </div>
+     </nav>
 
-<p>
-<label for="scenario1">Play scenario 1</label>
-<a href="Scenario1.html">
-<button class="button" id="scenario1" style="background-color: #8FBF77";>Play
-</button>
-</a>
-</p>
-<p>
-<label for="scenario2">Play scenario 2</label>
-<a href="Scenario2.html">
-<button class="button" id="scenario2" style="background-color: #8FBF77";>Play
-</button>
-</a>
-</p>
+  <!-- Header --> 
+  <div class="jumbotron">
+    <div class="container">
+      <h1 class="display-3">Digital Forensics Detective!</h1>
+      <p>Digital Forensics detective is a spin off version of the original cluedo game. It uses characters and places from Kent University and adds a digital forensics twist. This includes various attacks such as DDoS and Phishing in place of the weapons that cluedo originally had.</p>
+      <p><a class="btn btn-primary btn-lg" href="/play/" role="button">Join Game &raquo;</a></p>
+    </div>
+  </div>
 
-<p>
-<a href="/play/">
-<button class="button" style="background-color: #E89042";>Join Game
-</button>
-</a>
-</p>
+    <!-- Scenarios --> 
+	<div class="container">
+    	<div class="row">
+     	 <div class="col-md-4">
+       	 <h2>Play scenario 1</h2>
+      	  <p>Scenario 1 takes place in... </p>
+      	  <p><a class="btn btn-secondary" id="scenario1" href="Scenario1.html" role="button">Play &raquo;</a></p>
+      	</div>
+      	<div class="col-md-4">
+       	 <h2>Play scenario 2</h2>
+       	 <p>Scenario 2 requires the user to...</p>
+       	 <p><a class="btn btn-secondary" id="scenario2" href="Scenario2.html" role="button">Play &raquo;</a></p>
+        </div>
+      </div>
+	<hr>
+	</div>
+	
+	<!-- Modal box for about --> 
+	<div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="aboutModal" aria-hidden="true">
+  		<div class="modal-dialog modal-dialog-centered" role="document">
+   		 <div class="modal-content">
+     		 <div class="modal-header">
+      		 <h5 class="modal-title" id="aboutTitle">About</h5>
+        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+         	 	<span aria-hidden="true">&times;</span>
+        	</button>
+     	 </div>
+      		<div class="modal-body">
+        		A Gamemaster sets the scenario and the users load in to the game server side using any web browser. The scenario includes the attacker who did the crime, the type of attack they used and the room they did it in.
 
-<p>
-<a href="/about/">
-<button class="button" style="background-color: #E89042";>About
-</button>
-</a>
-</p>
+				The players roll the dice to acquire move points.
+
+				Using move points, players can make moves such as traversing the board, (accompany this point with an image of compass?) untampering hardware, making guesses/ accusations and revealing other players cards.
+
+				During gameplay, a player may encounter a random event. Random events enable the user to gain information about the crime and learn about digital forensics.
+
+				The first player to correctly make an accusation of the details of the crime wins the game.
+
+      		</div>
+      	<div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+    </div>
+    </div>
 
 </body>
-</head>
+
+<footer class="container">
+  <p>&copy; University of Kent, CO600</p>
+  <p>Tom Griffin, George Abbott, Shay Ritchie, Lewis Sainsbury, Ozgur Kafali</p>
+</footer>
+
 </html>
