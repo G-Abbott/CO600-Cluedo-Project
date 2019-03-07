@@ -847,3 +847,43 @@ function moveDown() {
                 }
         }
 }
+
+function moveDown() {
+        if (hold[currentCharacter].i > -1) {
+                if ( path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[x][y]) <= rollValue && board[x][y].obstacle == false && currentCharacter == clientCharacter && !movedPeice) {
+                        socket.emit('moveItem',currentCharacter, x, y);
+                }
+        }
+}
+
+function moveUp() {
+        if (hold[currentCharacter].i > -1) {
+                if ( path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[x][y]) <= rollValue && board[x][y].obstacle == false && currentCharacter == clientCharacter && !movedPeice) {
+                        socket.emit('moveItem',currentCharacter, x, y);
+                }
+        }
+}
+
+function moveDown() {
+        if (hold[currentCharacter].i > -1) {
+                if ( path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[x][y]) <= rollValue && board[x][y].obstacle == false && currentCharacter == clientCharacter && !movedPeice) {
+                        socket.emit('moveItem',currentCharacter, x, y);
+                }
+        }
+}
+
+function moveLeft() {
+        if (hold[currentCharacter].i > -1) {
+                if ( path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[x][y]) <= rollValue && board[x][y].obstacle == false && currentCharacter == clientCharacter && !movedPeice) {
+                        socket.emit('moveItem',currentCharacter, x, y);
+                }
+        }
+}
+
+function moveRight() {
+        if (hold[currentCharacter].i > -1) {
+                if ( path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[x][y]) <= rollValue && board[x][y].obstacle == false && currentCharacter == clientCharacter && !movedPeice) {
+                        socket.emit('moveItem',currentCharacter, x, y);
+                }
+        }
+}
