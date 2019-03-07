@@ -309,39 +309,52 @@ function preload()
 // Setup game    
 function setup()
 {
-    console.log("Setting up...")
-    // Init graphic canvas and buffers
-    canvas = createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
-    gridGraphics = createGraphics(GRID_WIDTH, GRID_HEIGHT);
-    charactersGraphics = createGraphics(CHARACTERS_WIDTH, CHARACTERS_HEIGHT);
-    majorMiscGraphics = createGraphics(MAJOR_MISC_WIDTH, MAJOR_MISC_HEIGHT);
-    //Define buttons, begin by hiding them
-    //Ready Button
-    readyB = createButton('Click here when ready');
-    readyB.position(535,110);
-    readyB.mousePressed(ready);
-    readyB.hide();
-	//Arrow buttons
-    buttonUp = createButton(String.fromCharCode(30));
-    buttonUp.position(800, 105);
-    buttonUp.hide();
-    buttonDown = createButton(String.fromCharCode(31));
-    buttonDown.position(800, 155);
-    buttonDown.hide();
-    buttonLeft = createButton(String.fromCharCode(17));
-    buttonLeft.position(750, 135);
-    buttonLeft.hide();
-    buttonRight = createButton(String.fromCharCode(16));
-    buttonRight.position(850, 135);
-    buttonRight.hide();
-	//End turn button
-    endTurnB = createButton('End Turn');
-    endTurnB.position(400,480);
-    endTurnB.mousePressed(endTurn);
-    endTurnB.hide();
-    // Generate board
-    generateBoard();
-    console.log("Setup complete")
+        console.log("Setting up...")
+        // Init graphic canvas and buffers
+        canvas = createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+        gridGraphics = createGraphics(GRID_WIDTH, GRID_HEIGHT);
+        charactersGraphics = createGraphics(CHARACTERS_WIDTH, CHARACTERS_HEIGHT);
+        majorMiscGraphics = createGraphics(MAJOR_MISC_WIDTH, MAJOR_MISC_HEIGHT);
+        //Define buttons, begin by hiding them
+        //Ready Button
+        readyB = createButton('Click here when ready');
+        readyB.position(535,110);
+        readyB.mousePressed(ready);
+        readyB.hide();
+        //Arrow buttons
+        buttonUp = createButton(String.fromCharCode(30));
+        buttonUp.position(800, 105);
+        buttonUp.mousePressed(moveUp);
+        buttonUp.hide();
+        buttonDown = createButton(String.fromCharCode(31));
+        buttonDown.position(800, 155);
+        buttonDown.mousePressed(moveDown);
+        buttonDown.hide();
+        buttonLeft = createButton(String.fromCharCode(17));
+        buttonLeft.position(750, 135);
+        buttonLeft.mousePressed(moveLeft);
+        buttonLeft.hide();
+        buttonRight = createButton(String.fromCharCode(16));
+        buttonRight.position(850, 135);
+        buttonRight.mousePressed(moveRight);
+        buttonRight.hide();
+        //End turn button
+        endTurnB = createButton('End Turn');
+        endTurnB.position(400,480);
+        endTurnB.mousePressed(endTurn);
+        endTurnB.hide();
+        //Make accusation and guess buttons
+        accusationB = createButton('Make Accusation');
+        accusationB.position(30, 110 + clientHand.length * 20 + 20);
+        accusationB.mousePressed(makeAccusation);
+        accusationB.hide();
+        guessB = createButton('Make Guess');
+        guessB.position(30, 110 + clientHand.length * 20 + 40);
+        guessB.mousePressed(makeGuess);
+        guessB.hide();
+        // Generate board
+        generateBoard();
+        console.log("Setup complete")
 }
 function startGame(players)
 {
@@ -540,8 +553,11 @@ function draw()
                         for (var i = 0; i < clientHand.length; i++) {
                                 majorMiscGraphics.text(clientHand[i], 50, 110 + i*20);
                         }
-                        majorMiscGraphics.text('Click here to MAKE AN SUGGESTION (one per turn)', 30, 110 + clientHand.length * 20 + 20);
-                        majorMiscGraphics.text('Click here to MAKE A ACCUSATION (may end game)', 30, 110 + clientHand.length * 20 + 40);
+                        accusationB.show();
+                        guessB.hide();
+                        scenarioContext = "accusation";
+                        selectingScenario = true;
+                }
                 }
         }
         // Draw rooms
@@ -853,6 +869,16 @@ function ready() {
                 socket.emit('readyGame');
                 readyStatus = "READY";
         }
+}
+
+function makeGuess() {
+        scenarioContext = "accusation";
+        selectingScenario = true;
+}
+
+function makeAccusation() {
+        scenarioContext = "accusation";
+        selectingScenario = true;
 }
 
 function moveUp() {

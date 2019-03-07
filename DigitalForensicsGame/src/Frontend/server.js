@@ -111,8 +111,8 @@ io.sockets.on('connection', function(socket)
                         console.log(socket.id + ' (' + hold[currentCharacter].name + ') made a false accusation!');
                 }
         });
-        // Suggestion
-        socket.on('makeSuggestion', function(suspect, weapon, room) 
+        // Guess
+        socket.on('makeGuess', function(suspect, weapon, room) 
         {
                 console.log(room)
                 var cardsFound = false;
