@@ -441,7 +441,7 @@ function draw()
                         }
                 }
                 // Character ticker
-                charactersGraphics.background(255);
+                charactersGraphics.background(0);
                 for (var i = 0; i < characters; i++) {
                         ellipseMode(CENTER);
                         if (i == currentCharacter) {
@@ -452,11 +452,13 @@ function draw()
                         charactersGraphics.ellipse((12 + 24 * i), 12, 20);
                 }
                 // Ticker text
-                charactersGraphics.fill(0, 0, 0, 255);
+                charactersGraphics.fill(255);
                 charactersGraphics.text(hold[currentCharacter].name + "'s turn", 12 + 24 * characters, 18);
-                // Next turn
+                // End turn button
                 if (currentCharacter == clientCharacter) {
-                        charactersGraphics.text("End turn", 400, 18);
+                        endTurnB = createButton('End Turn');
+                        endTurnB.position(400,480);
+                        endTurnB.mousePressed(endTurn);
                 }
         }
         // Draw major misc
@@ -486,7 +488,6 @@ function draw()
                 if (selectingScenario) {
                         majorMiscGraphics.text('MAKING ACCUSATION', 30, 30);
                         majorMiscGraphics.text('Selection ONE card from each category', 30, 50);
-              
                         if (scenario[0].length < 1) {
                                 // List suspects
                                 for (var i = 0; i < suspectCards.length; i++) {
@@ -617,12 +618,12 @@ function drawBoardDetails()
         gridGraphics.fill(255);
         gridGraphics.rect(384, 360, 96 -1, 120 -1);
         // Text
-        gridGraphics.noFill();
+        gridGraphics.noFill(255);
         gridGraphics.noStroke();
         gridGraphics.textSize(12);
         gridGraphics.stroke(0);
         gridGraphics.text("Server Room", 10, 20);
-        gridGraphics.text("Seminar room", 200, 20);
+        gridGraphics.text("Seminar Room", 200, 20);
         gridGraphics.text("Study Room", 420, 20);
         gridGraphics.text("Main Hall", 10, 140);
         gridGraphics.text("Convenors Office", 400, 210);
@@ -648,7 +649,7 @@ function drawBoardDetails()
         gridGraphics.line(336, 360, 336, 384);
         gridGraphics.line(408, 360, 432, 360);
 }
-function mousePressed() 
+function mouseClicked() 
 {
         if (mouseX < 480 && mouseY < 480) {
                 // Calculate the x-pos and y-pos of the mouse with respect to the grid
@@ -660,41 +661,41 @@ function mousePressed()
                                 socket.emit('moveItem',currentCharacter, x, y);
                         // Study
                         } else if (( x == 5 && y == 2) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[5][3]) <= rollValue - 1) { 
-                                socket.emit('enterRoom', currentCharacter, 'Study', 0);
+                                socket.emit('enterRoom', currentCharacter, 'Server Room', 0);
                         // Hall one
                         } else if (( x == 9 && y == 5) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[9][6]) <= rollValue - 1) { 
-                                socket.emit('enterRoom', currentCharacter, 'Hall', 1);
+                                socket.emit('enterRoom', currentCharacter, 'Seminar Room', 1);
                         } else if (( x == 11 && y == 4) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[12][4]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Hall', 1);
+                                socket.emit('enterRoom', currentCharacter, 'Seminar Room', 1);
                         // Lounge
                         } else if (( x == 14 && y == 4) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[14][5]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Lounge', 2);
+                                socket.emit('enterRoom', currentCharacter, 'Study Room', 2);
                         // Library
                         } else if (( x == 5 && y == 7) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[6][7]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Library', 3);
+                                socket.emit('enterRoom', currentCharacter, 'Main Hall', 3);
                         } else if (( x == 1 && y == 9) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[1][10]) <= rollValue - 1) { 
-                                socket.emit('enterRoom', currentCharacter, 'Library', 3);
+                                socket.emit('enterRoom', currentCharacter, 'Main Hall', 3);
                         // Dining room
                         } else if (( x == 16 && y == 8) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[16][7]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Dining room', 4);
+                                socket.emit('enterRoom', currentCharacter, 'Convenors Office', 4);
                         } else if (( x == 14 && y == 9) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[13][9]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Dining room', 4);
+                                socket.emit('enterRoom', currentCharacter, 'Convenors Office', 4);
                         // Billiard room
                         } else if (( x == 2 && y == 11) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[2][10]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Billiard room', 5);
+                                socket.emit('enterRoom', currentCharacter, 'Library', 5);
                         } else if (( x == 6 && y == 12) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[6][13]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Billiard room', 5);
+                                socket.emit('enterRoom', currentCharacter, 'Library', 5);
                         // Ballroom
                         } else if (( x == 11 && y == 14) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[11][13]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Ballroom', 6);
+                                socket.emit('enterRoom', currentCharacter, 'Admin Office', 6);
                         } else if (( x == 13 && y == 15) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[14][15]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Ballroom', 6);
+                                socket.emit('enterRoom', currentCharacter, 'Admin Office', 6);
                         // Kitchen
                         } else if (( x == 17 && y == 15) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[17][14]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Kitchen', 7);
+                                socket.emit('enterRoom', currentCharacter, 'Lecture Theatre', 7);
                         // Conservatory
                         } else if (( x == 5 && y == 18) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[5][17]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Conservatory', 8);
+                                socket.emit('enterRoom', currentCharacter, 'Computer Suite', 8);
                         }
                 } else if (hold[currentCharacter].i == -1) {
                         var roomIndex = hold[currentCharacter].room;
@@ -710,10 +711,6 @@ function mousePressed()
                         socket.emit('readyGame');
                         readyStatus = "READY";
                 }
-        }
-        // Next turn
-        if (mouseX > 390 && mouseX < 460 && mouseY > 480 && clientCharacter == currentCharacter && gameState == 'inProgress') {
-                socket.emit('nextTurn');
         }
         // Major Misc
         if (!selectingScenario && !pickingCards) {
@@ -833,6 +830,20 @@ function removeFromArray (array, item)
         for (var i = array.length - 1; i >= 0; i--) {
                 if (array[i] == item) {
                         array.splice(i, 1);
+                }
+        }
+}
+
+function endTurn() {
+        if (clientCharacter == currentCharacter && gameState == 'inProgress') {
+                socket.emit('nextTurn');
+        }
+}
+
+function moveDown() {
+        if (hold[currentCharacter].i > -1) {
+                if ( path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[x][y]) <= rollValue && board[x][y].obstacle == false && currentCharacter == clientCharacter && !movedPeice) {
+                        socket.emit('moveItem',currentCharacter, x, y);
                 }
         }
 }
