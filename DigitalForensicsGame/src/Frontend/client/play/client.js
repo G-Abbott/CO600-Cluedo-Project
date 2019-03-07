@@ -315,6 +315,32 @@ function setup()
         gridGraphics = createGraphics(GRID_WIDTH, GRID_HEIGHT);
         charactersGraphics = createGraphics(CHARACTERS_WIDTH, CHARACTERS_HEIGHT);
         majorMiscGraphics = createGraphics(MAJOR_MISC_WIDTH, MAJOR_MISC_HEIGHT);
+        //Define buttons, begin by hiding them
+        readyB = createButton('Click here when ready');
+        readyB.position(535,110);
+        readyB.mousePressed(ready);
+        readyB.hide();
+
+        buttonUp = createButton(String.fromCharCode(30));
+        buttonUp.position(800, 105);
+        buttonUp.hide();
+
+        buttonDown = createButton(String.fromCharCode(31));
+        buttonDown.position(800, 155);
+        buttonDown.hide();
+
+        buttonLeft = createButton(String.fromCharCode(17));
+        buttonLeft.position(750, 135);
+        buttonLeft.hide();
+
+        buttonRight = createButton(String.fromCharCode(16));
+        buttonRight.position(850, 135);
+        buttonRight.hide();
+
+        endTurnB = createButton('End Turn');
+        endTurnB.position(400,480);
+        endTurnB.mousePressed(endTurn);
+        endTurnB.hide();
         // Generate board
         generateBoard();
         console.log("Setup complete")
@@ -456,11 +482,10 @@ function draw()
                 charactersGraphics.text(hold[currentCharacter].name + "'s turn", 12 + 24 * characters, 18);
                 // End turn button
                 if (currentCharacter == clientCharacter) {
-                        endTurnB = createButton('End Turn');
-                        endTurnB.position(400,480);
-                        endTurnB.mousePressed(endTurn);
+                        endTurnB.show();
                 }
         }
+        
         // Draw major misc
         majorMiscGraphics.background(255);
         if (gameState == "notReady") {
@@ -468,23 +493,15 @@ function draw()
                 majorMiscGraphics.text('Game will start when all players are ready', 30, 50);
                 majorMiscGraphics.text('Click READY when you are ready to play', 30, 70);
                 majorMiscGraphics.text('Your client status: ' + readyStatus, 30, 90);
-                if (readyStatus == "NOT READY") {
-                        majorMiscGraphics.text('Click here say you are ready!', 60, 130);
-                }
+                readyB.show();
+
         }
         if (gameState == "inProgress" && gotClientHoldValue) {
-        	
-        	button = createButton(String.fromCharCode(30));
-        	button.position(800, 105);
-        	
-        	button = createButton(String.fromCharCode(31));
-        	button.position(800, 155);
-        	
-        	button = createButton(String.fromCharCode(17));
-        	button.position(750, 135);
-        	
-        	button = createButton(String.fromCharCode(16));
-        	button.position(850, 135);
+                buttonUp.show();
+                buttonDown.show();
+                buttonLeft.show();
+                buttonRight.show();
+                readyB.hide();
                 if (selectingScenario) {
                         majorMiscGraphics.text('MAKING ACCUSATION', 30, 30);
                         majorMiscGraphics.text('Selection ONE card from each category', 30, 50);
@@ -705,13 +722,6 @@ function mouseClicked()
                         
                 }
         }
-        // Ready game
-        if (gameState == "notReady") {
-                if (mouseX > 480 + 55 && mouseX < 480 + 55 + 200 && mouseY > 110 && mouseY < 135) {
-                        socket.emit('readyGame');
-                        readyStatus = "READY";
-                }
-        }
         // Major Misc
         if (!selectingScenario && !pickingCards) {
                 if (mouseX > 480 + 30 && mouseX < 480 + 30 + 300 && mouseY > 110 + clientHand.length * 20 + 20 && mouseY < 110 + clientHand.length * 20 + 40 && currentCharacter == clientCharacter) {
@@ -840,19 +850,10 @@ function endTurn() {
         }
 }
 
-function moveDown() {
-        if (hold[currentCharacter].i > -1) {
-                if ( path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[x][y]) <= rollValue && board[x][y].obstacle == false && currentCharacter == clientCharacter && !movedPeice) {
-                        socket.emit('moveItem',currentCharacter, x, y);
-                }
-        }
-}
-
-function moveDown() {
-        if (hold[currentCharacter].i > -1) {
-                if ( path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[x][y]) <= rollValue && board[x][y].obstacle == false && currentCharacter == clientCharacter && !movedPeice) {
-                        socket.emit('moveItem',currentCharacter, x, y);
-                }
+function ready() {
+        if (gameState == "notReady") {
+                socket.emit('readyGame');
+                readyStatus = "READY";
         }
 }
 
