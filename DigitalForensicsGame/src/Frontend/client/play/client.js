@@ -345,11 +345,11 @@ function setup()
         endTurnB.hide();
         //Make accusation and guess buttons
         accusationB = createButton('Make Accusation');
-        accusationB.position(30, 110 + clientHand.length * 20 + 20);
+        accusationB.position(510, 400 + clientHand.length * 20 + 20);
         accusationB.mousePressed(makeAccusation);
         accusationB.hide();
         guessB = createButton('Make Guess');
-        guessB.position(30, 110 + clientHand.length * 20 + 40);
+        guessB.position(510, 400 + clientHand.length * 20 + 40);
         guessB.mousePressed(makeGuess);
         guessB.hide();
         // Generate board
@@ -554,10 +554,7 @@ function draw()
                                 majorMiscGraphics.text(clientHand[i], 50, 110 + i*20);
                         }
                         accusationB.show();
-                        guessB.hide();
-                        scenarioContext = "accusation";
-                        selectingScenario = true;
-                }
+                        guessB.show();
                 }
         }
         // Draw rooms
@@ -565,7 +562,7 @@ function draw()
                 for (var i = 0; i < ROOM_CONST; i++) {
                         rooms[i].show();
                 }
-        };
+        }
         copy(gridGraphics, 0, 0, 480, 480, 0, 0, 480, 480);
         copy(charactersGraphics, 0, 0, 480, 24, 0, 480, 480, 24);
         copy(majorMiscGraphics, 0, 0, 480, 480, 480, 0, 480, 480);
