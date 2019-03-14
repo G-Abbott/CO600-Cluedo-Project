@@ -18,28 +18,20 @@
 
     <!-- Navigation Bar --> 
 	<nav class="navbar navbar-expand-lg navbar-light bg-dark">
- 		 <a class="navbar-brand" href="#"><b><span style="color:white">Digital <span style="color:red">Forensics</span> Detective</span></b></a>
-        
-        <!-- Button for navbar menu -->
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-    		<span class="navbar-toggler-icon"></span>
- 		 </button>
- 		 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-   			 <div class="navbar-nav">
-   			    <!-- Toggle modal box for about information --> 
-      			<a data-toggle = "modal" data-target= "#about" class="nav-link"><span style="color:white">About</span></a>
-    		</div>
- 		 </div>
-     </nav>
+ 	<div class="navbar-nav mr-auto"><a class="navbar-brand" href="#"><b><span style="color:white">Digital <span style="color:red">Forensics</span> Detective</span></b></a></div>
+       
+	<div class="navbar-nav ml-auto"><button type="button" class="btn btn-light" data-toggle="modal" data-target="#about">About</button></div>
+    </nav>
 
   <!-- Header --> 
   <div class="jumbotron">
     <div class="container">
       <h1 class="display-3">Digital Forensics Detective!</h1>
       <p>Digital Forensics detective is a spin off version of the original cluedo game. It uses characters and places from Kent University and adds a digital forensics twist. This includes various attacks such as DDoS and Phishing in place of the weapons that cluedo originally had.</p>
-      <p><a class="btn btn-primary btn-lg" href="/play/" role="button">Join Game &raquo;</a></p>
+      <p><a class="btn btn-primary btn-lg btn-light" href="/play/" role="button">Join Game &raquo;</a></p>
     </div>
   </div>
+
 
     <!-- Scenarios --> 
 	<div class="container">
@@ -54,22 +46,28 @@
        	 <p>Scenario 2 requires the user to...</p>
        	 <p><a class="btn btn-secondary" id="scenario2" href="Scenario2.html" role="button">Play &raquo;</a></p>
         </div>
+		<div class="col-md-4">
+       	 <h2>Play scenario 3</h2>
+       	 <p>Work in progress! More scenarios to come!</p>
+        </div>
       </div>
 	<hr>
 	</div>
 	
 	<!-- Modal box for about --> 
-	<div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="aboutModal" aria-hidden="true">
-  		<div class="modal-dialog modal-dialog-centered" role="document">
+	<div class="modal fade" id="about" role="dialog">
+  		<div class="modal-dialog">
    		 <div class="modal-content">
      		 <div class="modal-header">
-      		 <h5 class="modal-title" id="aboutTitle">About</h5>
+      		 <h5 class="modal-title" id="aboutModal">About</h5>
         	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-         	 	<span aria-hidden="true">&times;</span>
+         	 	<span aria-hidden="true">&ring;</span>
         	</button>
-     	 </div>
-      		<div class="modal-body">
-        		A Gamemaster sets the scenario and the users load in to the game server side using any web browser. The scenario includes the attacker who did the crime, the type of attack they used and the room they did it in.
+     	 	</div>
+      			<div class="modal-body">
+				<p>
+        		A Gamemaster sets the scenario and the users load in to the game server side using any web browser. 
+				The scenario includes the attacker who did the crime, the type of attack they used and the room they did it in.
 
 				The players roll the dice to acquire move points.
 
@@ -78,11 +76,12 @@
 				During gameplay, a player may encounter a random event. Random events enable the user to gain information about the crime and learn about digital forensics.
 
 				The first player to correctly make an accusation of the details of the crime wins the game.
+				</p>
 
-      		</div>
+      			</div>
       	<div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
+        <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+     	</div>
     </div>
     </div>
     </div>
