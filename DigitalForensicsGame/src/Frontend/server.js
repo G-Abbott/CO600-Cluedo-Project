@@ -193,8 +193,8 @@ io.sockets.on('connection', function(socket)
 });
 
 // Global board variables
-const COLS = 20;
-const ROWS = 20;
+const COLS = 24;
+const ROWS = 24;
 var board = undefined;
 var rollValue = 6;
 var currentCharacter = 0;
@@ -318,34 +318,56 @@ function generateBoard()
                         board[i][j] = new Cell(i, j);
                 }
         }
+        
         // Outline the map
-        horizontalObstacleLine(board[0][2], board[5][2]);
-        verticalObstacleLine(board[5][0], board[5][2]);
-        verticalObstacleLine(board[8][0], board[8][5]);
-        horizontalObstacleLine(board[8][5], board[11][5]);
-        verticalObstacleLine(board[11][0], board[11][5]);
-        verticalObstacleLine(board[14][0], board[14][4]);
-        horizontalObstacleLine(board[14][4], board[19][4]);
-        horizontalObstacleLine(board[0][5], board[4][5]);
-        verticalObstacleLine(board[5][6], board[5][8]);
-        horizontalObstacleLine(board[0][9], board[4][9]);
-        verticalObstacleLine(board[8][7], board[8][11]);
-        horizontalObstacleLine(board[8][7], board[11][7]);
-        verticalObstacleLine(board[11][7], board[11][11]);
-        horizontalObstacleLine(board[8][11], board[11][11]);
-        verticalObstacleLine(board[14][8], board[14][11]);
-        horizontalObstacleLine(board[14][8], board[19][8]);
-        horizontalObstacleLine(board[14][11], board[19][11]);
-        horizontalObstacleLine(board[0][11], board[5][11]);
-        verticalObstacleLine(board[5][11], board[5][14]);
-        horizontalObstacleLine(board[0][14], board[5][14]);
-        horizontalObstacleLine(board[0][17], board[4][17]);
-        verticalObstacleLine(board[5][18], board[5][19]);
-        horizontalObstacleLine(board[8][14], board[13][14]);
-        verticalObstacleLine(board[8][14], board[8][19]);
-        verticalObstacleLine(board[13][14], board[13][19]);
+        
+		//server room
+        horizontalObstacleLine(board[0][3], board[6][3]);
+        verticalObstacleLine(board[6][0], board[6][3]);
+        
+        //seminar room
+        horizontalObstacleLine(board[9][6], board[14][6]);
+        verticalObstacleLine(board[9][0], board[9][6]);
+        verticalObstacleLine(board[14][0], board[14][6]);
+        
+        //study room
+        horizontalObstacleLine(board[17][6], board[23][6]);
+        verticalObstacleLine(board[17][0], board[23][6]);
+        
+        //convenors office
+        horizontalObstacleLine(board[16][9], board[23][9]);
         horizontalObstacleLine(board[16][15], board[19][15]);
-        verticalObstacleLine(board[16][15], board[16][19]);
+        horizontalObstacleLine(board[20][16], board[23][20]);
+        verticalObstacleLine(board[16][9], board[16][15]);
+        
+        //computer suite
+        horizontalObstacleLine(board[18][19], board[23][19]);
+        verticalObstacleLine(board[18][19], board[18][23]);
+
+		//lecture theatre        
+        horizontalObstacleLine(board[8][17], board[15][17]);
+        verticalObstacleLine(board[8][17], board[8][23]);
+        verticalObstacleLine(board[15][17], board[16][23]);
+        
+        //admin office
+        horizontalObstacleLine(board[0][19], board[5][19]);
+        verticalObstacleLine(board[5][19], board[5][23]);
+        
+        //library
+        horizontalObstacleLine(board[0][16], board[5][16]);
+        horizontalObstacleLine(board[0][12], board[5][12]);
+        verticalObstacleLine(board[5][12], board[5][16]);
+        
+        //main hall
+        horizontalObstacleLine(board[0][6], board[5][6]);
+        horizontalObstacleLine(board[0][10], board[5][10]);
+        verticalObstacleLine(board[6][7], board[6][9]);
+        
+        //middle 
+        horizontalObstacleLine(board[9][8], board[13][8]);
+        horizontalObstacleLine(board[9][13], board[13][13]);
+        verticalObstacleLine(board[13][8], board[13][13]);        
+        verticalObstacleLine(board[9][8], board[9][13]); 
 }
 function horizontalObstacleLine(start, end) 
 {
@@ -367,21 +389,21 @@ function startGame(players)
         characters = players;
         hold = new Array(characters);
         if (players > 0) {
-                hold[0] = new Item("character", "Student", 0, 255, 0, 6, 0);
-                board[6][0].hold = 0;
-                board[6][0].obstacle = true;
+                hold[0] = new Item("character", "Student", 0, 255, 0, 7, 0);
+                board[7][0].hold = 0;
+                board[7][0].obstacle = true;    
         } if (players > 1) {
-                hold[1] = new Item("character", "Lecturer", 255, 36, 0, 12, 0);
-                board[12][0].hold = 1;
-                board[12][0].obstacle = true;
+                hold[1] = new Item("character", "Lecturer", 255, 36, 0, 15, 0);
+                board[15][0].hold = 1;
+                board[15][0].obstacle = true;
         } if (players > 2) {
-                hold[2] = new Item("character", "Administrator", 9, 84, 190, 6, 19);
-                board[6][19].hold = 2;
-                board[6][19].obstacle = true;
+                hold[2] = new Item("character", "Administrator", 9, 84, 190, 6, 23);
+                board[6][23].hold = 2;
+                board[6][23].obstacle = true;
         } if (players > 3) {
                 hold[3] = new Item("character", "Technician", 162, 0, 204, 14, 19);
-                board[14][19].hold = 3;
-                board[14][19].obstacle = true;
+                board[15][19].hold = 3;
+                board[15][19].obstacle = true;
         }
         for (var i = 0; i < characters; i++) {
                 hold[i].socketId = socketIds[i];
@@ -408,15 +430,16 @@ function startGame(players)
         handOut(cardsCollated);
         // Send them to the clients
         updateDecks();
-        rooms[0] = new Room("Server Room", 0, 1, 5, 3);
-        rooms[1] = new Room("Seminar room", 1, 2, 9, 6, 12, 4);
-        rooms[2] = new Room("Study Room", 2, 1, 14, 5);
-        rooms[3] = new Room("Main Hall", 3, 2, 6, 7, 1, 10);
-        rooms[4] = new Room("Convenors Office", 4, 2, 16, 7, 13, 9);
-        rooms[5] = new Room("Library", 5, 2, 2, 10, 6, 13);
-        rooms[6] = new Room("Admin Office", 6, 2, 11, 13, 14, 15);
-        rooms[7] = new Room("Lecture Theatre", 7, 1, 17, 14);
-        rooms[8] = new Room("Computer Suite", 8, 1, 5, 17);
+        // (name, index, doors, x1, y1, x2, y2)
+        rooms[0] = new Room("Server Room", 0, 1, 6, 4);
+        rooms[1] = new Room("Seminar room", 1, 2, 8, 4, 11, 7);
+        rooms[2] = new Room("Study Room", 2, 1, 17, 7);
+        rooms[3] = new Room("Main Hall", 3, 2, 8, 5, 3, 11);        
+        rooms[4] = new Room("Convenors Office", 4, 2, 17, 8, 15, 13);
+        rooms[5] = new Room("Library", 5, 2, 0, 11, 6, 14);
+        rooms[6] = new Room("Admin Office", 6, 1, 5, 18);        
+        rooms[7] = new Room("Lecture Theatre", 7, 2, 7, 19, 16, 19);        
+        rooms[8] = new Room("Computer Suite", 8, 1, 19, 18);
 }
 function nextTurn()
 {

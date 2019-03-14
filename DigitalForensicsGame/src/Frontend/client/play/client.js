@@ -321,24 +321,47 @@ function setup()
         readyB.position(535,110);
         readyB.mousePressed(ready);
         readyB.hide();
-		//Arrow buttons
+        //Arrow buttons
         buttonUp = createButton(String.fromCharCode(30));
         buttonUp.position(800, 105);
+        buttonUp.mousePressed(moveUp);
         buttonUp.hide();
         buttonDown = createButton(String.fromCharCode(31));
         buttonDown.position(800, 155);
+        buttonDown.mousePressed(moveDown);
         buttonDown.hide();
         buttonLeft = createButton(String.fromCharCode(17));
         buttonLeft.position(750, 135);
+        buttonLeft.mousePressed(moveLeft);
         buttonLeft.hide();
         buttonRight = createButton(String.fromCharCode(16));
         buttonRight.position(850, 135);
+        buttonRight.mousePressed(moveRight);
         buttonRight.hide();
-		//End turn button
+        //End turn button
         endTurnB = createButton('End Turn');
-        endTurnB.position(400,480);
+        endTurnB.position(400,481);
         endTurnB.mousePressed(endTurn);
         endTurnB.hide();
+		//Enter Room button
+		enterRoomB = createButton('Enter Room');
+        enterRoomB.position(300,481);
+        enterRoomB.mousePressed(enterRoom);
+        enterRoomB.hide();
+		//Cancel button
+		cancelB = createButton('Cancel');
+        cancelB.position(510, 480);
+        cancelB.mousePressed(cancel);
+        cancelB.hide();
+        //Make accusation and guess buttons
+        accusationB = createButton('Make Accusation');
+        accusationB.position(510, 400 + clientHand.length * 20 + 20);
+        accusationB.mousePressed(makeAccusation);
+        accusationB.hide();
+        guessB = createButton('Make Guess');
+        guessB.position(510, 400 + clientHand.length * 20 + 50);
+        guessB.mousePressed(makeGuess);
+        guessB.hide();
         // Generate board
         generateBoard();
         console.log("Setup complete")
@@ -389,7 +412,7 @@ function generateBoard()
         }
         // Outline the map
         
-        //server room
+		//server room
         horizontalObstacleLine(board[0][3], board[6][3]);
         verticalObstacleLine(board[6][0], board[6][3]);
         
@@ -468,6 +491,8 @@ function draw()
         gridGraphics.strokeWeight(1)
         // Draw game details
         if (gameState == "inProgress") {
+			    endTurnB.hide();
+				enterRoomB.hide();
                 // Highlight where the player can go
                 if (mouseX < 480 && mouseY < 480 && currentCharacter == clientCharacter && !movedPeice) {
                         if (hold[currentCharacter].i > -1) {
@@ -503,6 +528,7 @@ function draw()
                 // End turn button
                 if (currentCharacter == clientCharacter) {
                         endTurnB.show();
+						enterRoomB.show();
                 }
         }
         
@@ -517,19 +543,14 @@ function draw()
 
         }
         if (gameState == "inProgress" && gotClientHoldValue) {
-        	
-        	button = createButton(String.fromCharCode(30));
-        	button.position(800, 105);
-        	
-        	button = createButton(String.fromCharCode(31));
-        	button.position(800, 155);
-        	
-        	button = createButton(String.fromCharCode(17));
-        	button.position(750, 135);
-        	
-        	button = createButton(String.fromCharCode(16));
-        	button.position(850, 135);
+                buttonUp.show();
+                buttonDown.show();
+                buttonLeft.show();
+                buttonRight.show();
+                readyB.hide();
+				cancelB.hide();
                 if (selectingScenario) {
+						cancelB.show();
                         majorMiscGraphics.text('MAKING ACCUSATION', 30, 30);
                         majorMiscGraphics.text('Selection ONE card from each category', 30, 50);
                         if (scenario[0].length < 1) {
@@ -569,8 +590,8 @@ function draw()
                         for (var i = 0; i < clientHand.length; i++) {
                                 majorMiscGraphics.text(clientHand[i], 50, 110 + i*20);
                         }
-                        majorMiscGraphics.text('Click here to MAKE AN SUGGESTION (one per turn)', 30, 110 + clientHand.length * 20 + 20);
-                        majorMiscGraphics.text('Click here to MAKE A ACCUSATION (may end game)', 30, 110 + clientHand.length * 20 + 40);
+                        accusationB.show();
+                        guessB.show();
                 }
         }
         // Draw rooms
@@ -578,7 +599,7 @@ function draw()
                 for (var i = 0; i < ROOM_CONST; i++) {
                         rooms[i].show();
                 }
-        };
+        }
         copy(gridGraphics, 0, 0, 480, 480, 0, 0, 480, 480);
         copy(charactersGraphics, 0, 0, 480, 24, 0, 480, 480, 24);
         copy(majorMiscGraphics, 0, 0, 480, 480, 480, 0, 480, 480);
@@ -723,74 +744,26 @@ function drawBoardDetails()
         gridGraphics.line(11*20 , 7*20, 12*20, 7*20 );
 		//seminar room door 2
         gridGraphics.line(9*20 , 4*20, 9*20, 5*20 );
-		        
-						
 }
 function mouseClicked() 
 {
         if (mouseX < 480 && mouseY < 480) {
-                // Calculate the x-pos and y-pos of the mouse with respect to the grid
-                var x = Math.floor(mouseX / 480 * COLS);
-                var y = Math.floor(mouseY / 480 * ROWS);
-                // If path short enough with respect to roll value and destination not an obstacle, move item && if not in room
-                if (hold[currentCharacter].i > -1) {
-                        if ( path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[x][y]) <= rollValue && board[x][y].obstacle == false && currentCharacter == clientCharacter && !movedPeice) {
-                                socket.emit('moveItem',currentCharacter, x, y);
-                        // Server Room
-                        } else if (( x == 6 && y == 3) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[6][4]) <= rollValue - 1) { 
-                                socket.emit('enterRoom', currentCharacter, 'Server Room', 0);
-                                
-                        // Seminar Room
-                        } else if (( x == 9 && y == 4) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[8][4]) <= rollValue - 1) { 
-                                socket.emit('enterRoom', currentCharacter, 'Seminar Room', 1);
-                        } else if (( x == 11 && y == 6) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[11][7]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Seminar Room', 1);
-                                
-                        // Study Room
-                        } else if (( x == 17 && y == 6) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[17][7]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Study Room', 2);
-                                
-                        // Convenors Office
-                        } else if (( x == 17 && y == 9) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[17][8]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Convenors Office', 4);
-                        } else if (( x == 16 && y == 13) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[15][13]) <= rollValue - 1) { 
-                                socket.emit('enterRoom', currentCharacter, 'Convenors Office', 4);
-   
-                        // Computer Suite
-                        } else if (( x == 19 && y == 19) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[19][18]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Computer Suite', 8);
-
-                        // Lecture Theatre
-                        } else if (( x == 15 && y == 19) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[16][19]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Lecture Theatre', 7);
-                        } else if (( x == 8 && y == 19) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[7][19]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Lecture Theatre', 7);
-                                
-                        // Admin Office
-                        } else if (( x == 5 && y == 19) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[5][18]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Admin Office', 6);
-
-                        // Library
-                        } else if (( x == 5 && y == 14) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[6][14]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Library', 5);
-                        } else if (( x == 0 && y == 12) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[0][11]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Library', 5);
-
-                        // Main Hall
-                        } else if (( x == 3 && y == 10) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[3][11]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Main Hall', 3);
-                        } else if (( x == 6 && y == 8) && path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[7][8]) <= rollValue - 1) {
-                                socket.emit('enterRoom', currentCharacter, 'Main Hall', 3);
-                        }
-                        
-                } else if (hold[currentCharacter].i == -1) {
-                        var roomIndex = hold[currentCharacter].room;
-                        if(rooms[roomIndex].pathFrom(x, y, rollValue -1)) {
-                                socket.emit('leaveRoom', currentCharacter, roomIndex, x, y);
-                        }
-                        
-                }
-        }
+			// Calculate the x-pos and y-pos of the mouse with respect to the grid
+			var x = Math.floor(mouseX / 480 * COLS);
+			var y = Math.floor(mouseY / 480 * ROWS);
+			// If path short enough with respect to roll value and destination not an obstacle, move item && if not in room
+			if (hold[currentCharacter].i > -1) {
+				if ( path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[x][y]) <= rollValue && board[x][y].obstacle == false && currentCharacter == clientCharacter && !movedPeice) {
+					socket.emit('moveItem',currentCharacter, x, y);
+				}
+			}
+			if (hold[currentCharacter].i == -1) {
+				var roomIndex = hold[currentCharacter].room;
+				if(rooms[roomIndex].pathFrom(x, y, rollValue)) {
+					socket.emit('leaveRoom', currentCharacter, roomIndex, x, y);
+				}
+			}	
+		}
         // Major Misc
         if (!selectingScenario && !pickingCards) {
                 if (mouseX > 480 + 30 && mouseX < 480 + 30 + 300 && mouseY > 110 + clientHand.length * 20 + 20 && mouseY < 110 + clientHand.length * 20 + 40 && currentCharacter == clientCharacter) {
@@ -919,11 +892,72 @@ function endTurn() {
         }
 }
 
+function enterRoom() {
+	if (hold[currentCharacter].i > -1) {
+                // Server Room
+                if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[6][4]) <= rollValue - 1) { 
+                        socket.emit('enterRoom', currentCharacter, 'Server Room', 0);       
+                // Seminar Room
+                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[8][4]) <= rollValue - 1) { 
+                        socket.emit('enterRoom', currentCharacter, 'Seminar Room', 1);
+                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[11][7]) <= rollValue - 1) {
+                        socket.emit('enterRoom', currentCharacter, 'Seminar Room', 1);                        
+                // Study Room
+                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[17][7]) <= rollValue - 1) {
+                        socket.emit('enterRoom', currentCharacter, 'Study Room', 2);                    
+                // Convenors Office
+                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[17][8]) <= rollValue - 1) {
+                        socket.emit('enterRoom', currentCharacter, 'Convenors Office', 4);
+                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[15][13]) <= rollValue - 1) { 
+                        socket.emit('enterRoom', currentCharacter, 'Convenors Office', 4);
+                // Computer Suite
+                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[19][18]) <= rollValue - 1) {
+                        socket.emit('enterRoom', currentCharacter, 'Computer Suite', 8);
+                // Lecture Theatre
+                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[16][19]) <= rollValue - 1) {
+                        socket.emit('enterRoom', currentCharacter, 'Lecture Theatre', 7);
+                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[7][19]) <= rollValue - 1) {
+                        socket.emit('enterRoom', currentCharacter, 'Lecture Theatre', 7);                     
+                // Admin Office
+                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[5][18]) <= rollValue - 1) {
+                        socket.emit('enterRoom', currentCharacter, 'Admin Office', 6);
+                // Library
+                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[6][14]) <= rollValue - 1) {
+                        socket.emit('enterRoom', currentCharacter, 'Library', 5);
+                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[0][11]) <= rollValue - 1) {
+                        socket.emit('enterRoom', currentCharacter, 'Library', 5);
+                // Main Hall
+                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[3][11]) <= rollValue - 1) {
+                        socket.emit('enterRoom', currentCharacter, 'Main Hall', 3);
+                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[7][8]) <= rollValue - 1) {
+                        socket.emit('enterRoom', currentCharacter, 'Main Hall', 3);
+                }
+		else {
+			alert("You must be by a room door to enter a room");
+		}
+	}
+}
+
 function ready() {
         if (gameState == "notReady") {
                 socket.emit('readyGame');
                 readyStatus = "READY";
         }
+}
+
+function cancel() {
+	scenario = ["", "", ""];
+	selectingScenario = false;
+}
+
+function makeGuess() {
+        scenarioContext = "accusation";
+        selectingScenario = true;
+}
+
+function makeAccusation() {
+        scenarioContext = "accusation";
+        selectingScenario = true;
 }
 
 function moveUp() {
