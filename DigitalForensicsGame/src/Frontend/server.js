@@ -434,7 +434,7 @@ function startGame(players)
         rooms[0] = new Room("Server Room", 0, 1, 6, 4);
         rooms[1] = new Room("Seminar room", 1, 2, 8, 4, 11, 7);
         rooms[2] = new Room("Study Room", 2, 1, 17, 7);
-        rooms[3] = new Room("Main Hall", 3, 2, 8, 5, 3, 11);        
+        rooms[3] = new Room("Main Hall", 3, 2, 7, 8, 3, 11);        
         rooms[4] = new Room("Convenors Office", 4, 2, 17, 8, 15, 13);
         rooms[5] = new Room("Library", 5, 2, 0, 11, 6, 14);
         rooms[6] = new Room("Admin Office", 6, 1, 5, 18);        
