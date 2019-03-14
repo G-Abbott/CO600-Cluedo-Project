@@ -95,6 +95,7 @@ function Item(type, name, red, green, blue, i, j)
         // Show item
         this.show = function() 
         {
+        
                 gridGraphics.fill(this.r, this.g, this.b);
                 gridGraphics.noStroke;
                 gridGraphics.strokeWeight(0);
