@@ -393,17 +393,17 @@ function startGame(players)
                 board[7][0].hold = 0;
                 board[7][0].obstacle = true;    
         } if (players > 1) {
-                hold[1] = new Item("character", "Lecturer", 255, 36, 0, 15, 0);
-                board[15][0].hold = 1;
-                board[15][0].obstacle = true;
+                hold[1] = new Item("character", "Lecturer", 255, 36, 0, 16, 0);
+                board[16][0].hold = 1;
+                board[16][0].obstacle = true;
         } if (players > 2) {
                 hold[2] = new Item("character", "Administrator", 9, 84, 190, 6, 23);
                 board[6][23].hold = 2;
                 board[6][23].obstacle = true;
         } if (players > 3) {
-                hold[3] = new Item("character", "Technician", 162, 0, 204, 14, 19);
-                board[15][19].hold = 3;
-                board[15][19].obstacle = true;
+                hold[3] = new Item("character", "Technician", 162, 0, 204, 17, 23);
+                board[17][23].hold = 3;
+                board[17][23].obstacle = true;
         }
         for (var i = 0; i < characters; i++) {
                 hold[i].socketId = socketIds[i];
@@ -434,7 +434,7 @@ function startGame(players)
         rooms[0] = new Room("Server Room", 0, 1, 6, 4);
         rooms[1] = new Room("Seminar room", 1, 2, 8, 4, 11, 7);
         rooms[2] = new Room("Study Room", 2, 1, 17, 7);
-        rooms[3] = new Room("Main Hall", 3, 2, 8, 5, 3, 11);        
+        rooms[3] = new Room("Main Hall", 3, 2, 7, 8, 3, 11);        
         rooms[4] = new Room("Convenors Office", 4, 2, 17, 8, 15, 13);
         rooms[5] = new Room("Library", 5, 2, 0, 11, 6, 14);
         rooms[6] = new Room("Admin Office", 6, 1, 5, 18);        
