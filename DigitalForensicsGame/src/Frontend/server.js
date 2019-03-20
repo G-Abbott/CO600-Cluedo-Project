@@ -1,15 +1,25 @@
-// Server bedrock
+//server.js is the file that Node.js will execute and listen to requests.
+
+//Import express
 var express = require('express');
+
+//Import socket.io
 var sio  = require('socket.io');
+
+//Instance of express application 
 var app = express();
+
+//Use 'client' as the root directory from which to serve static assets
 app.use(express.static('client'));
 
-// Setup function
+
+//Server to listen for requests on port 4444
 var server = app.listen(4444, function()
 {
-        console.log('Started serving');
+        console.log('Begun serving');
+        //Create new game board
         generateBoard();
-        console.log("Generated board");
+        console.log("New game board generated");
 });
 
 // Start listening
