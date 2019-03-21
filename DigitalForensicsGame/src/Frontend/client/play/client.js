@@ -364,8 +364,8 @@ function setup()
         guessB.position(510, 400 + clientHand.length * 20 + 50);
         guessB.mousePressed(makeGuess);
         guessB.hide();
-        // Generate board
-        generateBoard();
+        // create game board
+        createBoard();
         console.log("Setup complete")
 }
 function startGame(players)
@@ -400,7 +400,7 @@ function startGame(players)
         rooms[7] = new Room("Lecture Theatre", 7, 2, 7, 19, 16, 19);        
         rooms[8] = new Room("Computer Suite", 8, 1, 19, 18);
 }
-function generateBoard() 
+function createBoard() 
 {
         // Making a 2D array
         for (var i = 0; i < COLS; i++) {

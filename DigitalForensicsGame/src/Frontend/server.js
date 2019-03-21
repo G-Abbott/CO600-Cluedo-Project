@@ -4,42 +4,43 @@
 var express = require('express');
 
 //Import socket.io
-var sio  = require('socket.io');
+var socket  = require('socket.io');
 
 //Instance of express application 
 var app = express();
 
-//Use 'client' as the root directory from which to serve static assets
+//Use 'client' as the root directory from which to serve static files
 app.use(express.static('client'));
 
 
-//Server to listen for requests on port 4444
+//Server that listens for requests on port 4444
 var server = app.listen(4444, function()
 {
-        console.log('Begun serving');
+        console.log('Listening to requests on port 4444');
         //Create new game board
-        generateBoard();
-        console.log("New game board generated");
+        createBoard();
+        console.log("New game board created");
 });
 
-// Start listening
-var io = sio.listen(server);
+// socket.io to listen on 'server'
+var io = socket.listen(server);
 var socketConnections = 0;
 var socketIds = [];
 var gameState = "notReady";
 var movedPeice = false;
 var readyClients = 0;
 
-// On new connection/disconnection
+// On new connection/disconnection from browser
 io.sockets.on('connection', function(socket)
 {
-        // Connection/Disconnection boring stuff
-        console.log('New connection: ' + socket.id);
+        // Connection
+        console.log('Made socket connection:' + socket.id);
         socketConnections++;
         socketIds.push(socket.id);
         io.sockets.emit('connectionsUpdate', socketConnections);
         console.log('Number of connections: ' + socketConnections);
         var socketReady = false;
+        // Disconnection
         socket.on('disconnect', function()
         {
                 console.log('User disconnected: ' + socket.id);
@@ -312,8 +313,8 @@ function Room(name, index, doors, x1, y1, x2, y2)
                 }
         };
 };
-// Return fresh board
-function generateBoard() 
+// Create new game board
+function createBoard() 
 {
         // Wipe board and create array
         board = undefined;
