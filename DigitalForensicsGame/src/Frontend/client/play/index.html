@@ -7,8 +7,16 @@
     <script src="/libraries/addons/p5.sound.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
     <script src="client.js"></script>
-    <style> body {padding: 0; margin: 0;} </style>
+    <style> body {padding: 0; margin: 0;} #chat {position: fixed; bottom: 23px; right: 28px; width: 280px;} </style>
   </head>
   <body>
+  	<div id = "chat">
+  		<div id = "chat-window">
+  			<div id = "output"></div>
+  		</div>
+  		<input id = "handle" type = "text" placeholder = "Handle" />
+  		<input id = "message" type = "text" placeholder = "Message" />
+  		<button id ="send">Send</button>
+  		</div>
   </body>
 </html>

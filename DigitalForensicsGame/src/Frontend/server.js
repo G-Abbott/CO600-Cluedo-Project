@@ -53,6 +53,12 @@ io.sockets.on('connection', function(socket)
                 removeFromArray(socketIds, socket.id);
                 console.log('Number of connections: ' + socketConnections);
         });
+        
+        //Chat
+        socket.on('chat', function(data){
+        	io.emit('chat', data);
+        });
+        
         // Ready game
         socket.on('readyGame', function()
         {
