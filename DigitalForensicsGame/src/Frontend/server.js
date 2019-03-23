@@ -16,7 +16,7 @@ app.use(express.static('client'));
 //Server that listens for requests on port 4444
 var server = app.listen(4444, function()
 {
-        console.log('Listening to requests on port 4444');
+        console.log('Starting server on port 4444');
         //Create new game board
         createBoard();
         console.log("New game board created");
@@ -34,7 +34,7 @@ var readyClients = 0;
 io.sockets.on('connection', function(socket)
 {
         // Connection
-        console.log('Made socket connection:' + socket.id);
+        console.log('Made new connection:' + socket.id);
         socketConnections++;
         socketIds.push(socket.id);
         io.sockets.emit('connectionsUpdate', socketConnections);
@@ -53,6 +53,12 @@ io.sockets.on('connection', function(socket)
                 removeFromArray(socketIds, socket.id);
                 console.log('Number of connections: ' + socketConnections);
         });
+        
+        //Chat
+        socket.on('chat', function(data){
+        	io.emit('chat', data);
+        });
+        
         // Ready game
         socket.on('readyGame', function()
         {

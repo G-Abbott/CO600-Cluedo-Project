@@ -1,79 +1,117 @@
 p5.dom;
 
-// Declaring variables & constants & objects
+// Declarations
+//Entire page
 var canvas = undefined;
-const CANVAS_WIDTH = 480 + 480 ;
-const CANVAS_HEIGHT = 504;
-const COLS = 24;
-const ROWS = 24;
-var board = new Array(COLS);
-var gridGraphics = undefined;
-const GRID_WIDTH = 480;
-const GRID_HEIGHT = 480;
+const canvasWidth = 480 + 480 ;
+const canvasHeight = 504;
+const columns = 24;
+const rows = 24;
+//Board graphic
+var board = new Array(columns);
+var gridGraphic = undefined;
+const gridWidth = 480;
+const gridHeight = 480;
+//Charachter graphic (bar below board)
 var charactersGraphics = undefined;
-const CHARACTERS_WIDTH = 480;
-const CHARACTERS_HEIGHT = 24;
+const charactersWidth = 480;
+const charactersHeight = 24;
+//Sidebar graphic
+const sidebarWidth = 480;
+const sidebarHeight = 480;
+
+//Connect to the socket.io address
+var socket = io.connect("localhost:4444");
+
+//Miscellaneous veriables
 var characters = 1;
-var hold = undefined;
-var rollValue = 6;
+var details = undefined;
+var roll = 6;
 var currentCharacter = 0;
 var gameState = undefined;
-const MAJOR_MISC_WIDTH = 480;
-const MAJOR_MISC_HEIGHT = 480;
-var socket = io.connect("localhost:4444");
 var clientCharacter = undefined;
 var connections = 1;
-var readyStatus = "NOT READY";
+var status = "NOT READY";
 var readyClients = 0;
-var gotClientHoldValue = false;
-var clientHand = [];
-var movedPeice = false;
-var selectingScenario = false;
-var scenarioContext = undefined;
-var scenario = ["", "", ""];
-var suspectCards = ['Student', 'Lecturer', 'Administrator', 'Technician'];
-var weaponCards = ['Data Theft', 'Fraud', 'Malware', 'Brute Force', 'Man-in-the-middle', 'Phishing'];
-var roomCards = ['Server Room', 'Seminar Room', 'Study Room', 'Main Hall', 'Convenors Office', 'Library', 'Admin Office', 'Lecture Theatre', 'Computer Suite'];
-var pickFrom = ["", "", ""];
-var pickingCards = false;
-const ROOM_CONST = 9;
-var rooms = new Array(ROOM_CONST);
+var gotClientDetails = false;
+var clientCards = [];
+var clientMoved = false;
+var makingChoice = false;
+var choiceName = undefined;
+var choice = ["", "", ""];
 
-function Cell(i, j) 
+//Define all cards
+var suspectCards = ['Student', 'Lecturer', 'Administrator', 'Technician'];
+var methodCards = ['Data Theft', 'Fraud', 'Malware', 'Brute Force', 'Man-in-the-middle', 'Phishing'];
+var roomCards = ['Server Room', 'Seminar Room', 'Study Room', 'Main Hall', 'Convenors Office', 'Library', 'Admin Office', 'Lecture Theatre', 'Computer Suite'];
+
+var choosingFrom = ["", "", ""];
+var choosing = false;
+
+//Define rooms
+const roomNum = 9;
+var rooms = new Array(roomNum);
+
+window.onload = function(){
+//Query DOM
+var message = document.getElementById('message');
+	handle = document.getElementById('handle');
+	btn = document.getElementById('send');
+	output = document.getElementById('output');
+
+//Emit events
+	
+btn.addEventListener('click', function(){
+	socket.emit('chat', {
+		message: message.value,
+		handle: handle.value
+	});
+});
+};
+
+//Listen for events
+socket.on('chat', function(data){
+	output.innerHTML += '<p><strong>' + data.handle + ': <strong>' + data.message + '</p>';
+});
+
+function Coordinate(i, j) 
 {
         // Cell position
         this.i = i;
         this.j = j;
+
         // Pathfinding variables
         this.f = this.g = this.h = 0;
         this.n = [];
-        // Not an obstacle by default
+
         this.obstacle = false;
-        // Cell holds nothing by default
-        this.hold = -1;
-        // Show the cell
+
+        // -1 States that the coordinate is empty
+        this.details = -1;
+
+        // Show all of the coordinates
         this.show = function() 
         {
-                gridGraphics.fill(255,216,101);
-                gridGraphics.stroke(0);
-                if (this.hold == -1) {
-                        gridGraphics.strokeWeight(0.5);
-                        gridGraphics.rect(this.i * (GRID_WIDTH / COLS), this.j * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
+                gridGraphic.fill(255,216,101);
+                gridGraphic.stroke(0);
+                if (this.details == -1) {
+                        gridGraphic.strokeWeight(0.5);
+                        gridGraphic.rect(this.i * (gridWidth / columns), this.j * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                 } else {
-                        hold[this.hold].show();
+                        details[this.details].show();
                 }
         }
         // Reset pathfinding variables
         this.pathInit = function() 
         {
                 this.n = [];
-                if (this.i < COLS - 1) {
+                if (this.i < columns - 1) {
                         this.n.push(board[this.i + 1][j]);
                 }
                 if (this.i > 0) {
                         this.n.push(board[this.i - 1][j]);
                 }
-                if (this.j < ROWS - 1) {
+                if (this.j < rows - 1) {
                         this.n.push(board[this.i][j + 1]);
                 }
                 if (this.j > 0) {
@@ -95,10 +133,10 @@ function Item(type, name, red, green, blue, i, j)
         // Show item
         this.show = function() 
         {
-                gridGraphics.fill(this.r, this.g, this.b);
-                gridGraphics.noStroke;
-                gridGraphics.strokeWeight(0);
-                gridGraphics.rect(this.i * (GRID_WIDTH / COLS), this.j * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
+                gridGraphic.fill(this.r, this.g, this.b);
+                gridGraphic.noStroke;
+                gridGraphic.strokeWeight(0);
+                gridGraphic.rect(this.i * (gridWidth / columns), this.j * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
         }
 }
 function Room(name, index, doors, x1, y1, x2, y2)
@@ -113,26 +151,26 @@ function Room(name, index, doors, x1, y1, x2, y2)
         {
                 if (this.characters.indexOf(character) == -1) {
                         this.characters.push(character);
-                        hold[character].room = index;
+                        details[character].room = index;
                         
-                        board[hold[character].i][hold[character].j].hold = -1;
-                        board[hold[character].i][hold[character].j].obstacle = false;
+                        board[details[character].i][details[character].j].details = -1;
+                        board[details[character].i][details[character].j].obstacle = false;
                         
-                        hold[character].i = hold[character].j = -1;
-                        movedPeice = true;
-                        console.log(hold[character].name + ' has entered room ' + this.name);
+                        details[character].i = details[character].j = -1;
+                        clientMoved = true;
+                        console.log(details[character].name + ' has entered room ' + this.name);
                 }
         };
         this.leave = function(character, i, j)
         {
                 removeFromArray(this.characters, character);
-                hold[character].room = -1;
-                hold[character].i = i;
-                hold[character].j = j;
-                board[i][j].hold = character;
+                details[character].room = -1;
+                details[character].i = i;
+                details[character].j = j;
+                board[i][j].details = character;
                 board[i][j].obstacle = true;
-                movedPeice = true;
-                console.log(hold[character].name + ' has left room ' + this.name);
+                clientMoved = true;
+                console.log(details[character].name + ' has left room ' + this.name);
         }
         this.pathFrom = function(i, j, roll)
         {
@@ -153,57 +191,57 @@ function Room(name, index, doors, x1, y1, x2, y2)
         {
                 if (this.name == "Server Room") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
-                                gridGraphics.stroke(0);
-                                gridGraphics.rect(4 * (GRID_WIDTH / COLS), 1 * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
+                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
+                                gridGraphic.stroke(0);
+                                gridGraphic.rect(4 * (gridWidth / columns), 1 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 } else if (this.name == "Seminar Room") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
-                                gridGraphics.stroke(0);
-                                gridGraphics.rect(10 * (GRID_WIDTH / COLS), 4 * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
+                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
+                                gridGraphic.stroke(0);
+                                gridGraphic.rect(10 * (gridWidth / columns), 4 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 } else if (this.name == "Study Room") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
-                                gridGraphics.stroke(0);
-                                gridGraphics.rect(18 * (GRID_WIDTH / COLS), 3 * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
+                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
+                                gridGraphic.stroke(0);
+                                gridGraphic.rect(18 * (gridWidth / columns), 3 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 } else if (this.name == "Main Hall") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
-                                gridGraphics.stroke(0);
-                                gridGraphics.rect(3 * (GRID_WIDTH / COLS), 8 * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
+                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
+                                gridGraphic.stroke(0);
+                                gridGraphic.rect(3 * (gridWidth / columns), 8 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 } else if (this.name == "Convenors Office") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
-                                gridGraphics.stroke(0);
-                                gridGraphics.rect(18 * (GRID_WIDTH / COLS), 13 * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
+                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
+                                gridGraphic.stroke(0);
+                                gridGraphic.rect(18 * (gridWidth / columns), 13 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 } else if (this.name == "Library") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
-                                gridGraphics.stroke(0);
-                                gridGraphics.rect(3 * (GRID_WIDTH / COLS), 14 * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
+                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
+                                gridGraphic.stroke(0);
+                                gridGraphic.rect(3 * (gridWidth / columns), 14 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 } else if (this.name == "Admin Office") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
-                                gridGraphics.stroke(0);
-                                gridGraphics.rect(4 * (GRID_WIDTH / COLS), 20 * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
+                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
+                                gridGraphic.stroke(0);
+                                gridGraphic.rect(4 * (gridWidth / columns), 20 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 } else if (this.name == "Lecture Theatre") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
-                                gridGraphics.stroke(0);
-                                gridGraphics.rect(12 * (GRID_WIDTH / COLS), 20 * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
+                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
+                                gridGraphic.stroke(0);
+                                gridGraphic.rect(12 * (gridWidth / columns), 20 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 } else if (this.name == "Computer Suite") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b);
-                                gridGraphics.stroke(0);
-                                gridGraphics.rect(20 * (GRID_WIDTH / COLS), 20 * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
+                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
+                                gridGraphic.stroke(0);
+                                gridGraphic.rect(20 * (gridWidth / columns), 20 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 }
         };
@@ -228,29 +266,29 @@ function preload()
         {
                 clientCharacter = holdValue;
                 console.log('client character ' + clientCharacter);
-                gotClientHoldValue = true;
+                gotClientDetails = true;
                 
         });
         socket.on('clientMoveItem', function(index, x, y)
         {
                 // Empty the cell holding bay
-                board[hold[index].i][hold[index].j].hold = -1;
+                board[details[index].i][details[index].j].details = -1;
                 // Set old cell obstacle value to false
-                board[hold[index].i][hold[index].j].obstacle = false;
+                board[details[index].i][details[index].j].obstacle = false;
                 // Change the x-pos and y-pos of the item
-                hold[index].i = x;
-                hold[index].j = y;
+                details[index].i = x;
+                details[index].j = y;
                 // Place the item in the new cell holding bay
-                board[x][y].hold = index;
+                board[x][y].details = index;
                 // Set new cell obstacle value to true
                 board[x][y].obstacle = true;
-                movedPeice = true;
+                clientMoved = true;
         });
         socket.on('currentCharacterUpdate', function(update)
         {
                 currentCharacter = update;
-                movedPeice = false;
-                scenario = ["", "", ""];
+                clientMoved = false;
+                choice = ["", "", ""];
         });
         socket.on('connectionsUpdate', function(update)
         {
@@ -260,25 +298,25 @@ function preload()
         {
                 readyClients = update;
         })
-        socket.on('rollValue', function(roll)
+        socket.on('roll', function(roll)
         {
-                rollValue = roll;
-                console.log('New roll value from server: ' + rollValue);
+                roll = roll;
+                console.log('New roll value from server: ' + roll);
         });
         socket.on('newCard', function(card)
         {
-                clientHand.push(card);
+                clientCards.push(card);
         });
         socket.on('accusationCorrect', function()
         {
-                window.alert(hold[currentCharacter].name + ' wins the game!');
-                selectingScenario = false;
+                window.alert(details[currentCharacter].name + ' wins the game!');
+                makingChoice = false;
 
         });
         socket.on('accusationIncorrect', function()
         {
-                window.alert(hold[currentCharacter].name + ' is out of the game after a false accusation...');
-                selectingScenario = false;
+                window.alert(details[currentCharacter].name + ' is out of the game after a false accusation...');
+                makingChoice = false;
         });
         socket.on('noCardsFound', function(name, suspect, weapon, room)
         {
@@ -287,14 +325,14 @@ function preload()
         socket.on('pickCard', function (name, suspect, weapon, room)
         {
                 window.alert(name + " suggested " + suspect + " with " + weapon + " in " + room + ", please pick card to show player");
-                pickFrom[0] = suspect;
-                pickFrom[1] = weapon;
-                pickFrom[2] = room;
-                pickingCards = true;
+                choosingFrom[0] = suspect;
+                choosingFrom[1] = weapon;
+                choosingFrom[2] = room;
+                choosing = true;
         });
         socket.on('showCard', function(card, index)
         {
-                window.alert(hold[index].name + " shows you card " + card);
+                window.alert(details[index].name + " shows you card " + card);
         });
         socket.on('enterRoom', function(character, roomName, roomCode)
         {
@@ -311,10 +349,10 @@ function setup()
 {
         console.log("Setting up...")
         // Init graphic canvas and buffers
-        canvas = createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
-        gridGraphics = createGraphics(GRID_WIDTH, GRID_HEIGHT);
-        charactersGraphics = createGraphics(CHARACTERS_WIDTH, CHARACTERS_HEIGHT);
-        majorMiscGraphics = createGraphics(MAJOR_MISC_WIDTH, MAJOR_MISC_HEIGHT);
+        canvas = createCanvas(canvasWidth, canvasHeight);
+        gridGraphic = createGraphics(gridWidth, gridHeight);
+        charactersGraphics = createGraphics(charactersWidth, charactersHeight);
+        majorMiscGraphics = createGraphics(sidebarWidth, sidebarHeight);
         //Define buttons, begin by hiding them
         //Ready Button
         readyB = createButton('Click here when ready');
@@ -357,36 +395,36 @@ function setup()
         cancelB.hide();
         //Make accusation and guess buttons
         accusationB = createButton('Make Accusation');
-        accusationB.position(510, 400 + clientHand.length * 20 + 20);
+        accusationB.position(510, 400 + clientCards.length * 20 + 20);
         accusationB.mousePressed(makeAccusation);
         accusationB.hide();
         guessB = createButton('Make Guess');
-        guessB.position(510, 400 + clientHand.length * 20 + 50);
+        guessB.position(510, 400 + clientCards.length * 20 + 50);
         guessB.mousePressed(makeGuess);
         guessB.hide();
-        // create game board
+        // Create Game board
         createBoard();
         console.log("Setup complete")
 }
 function startGame(players)
 {
         characters = players;
-        hold = new Array(characters);
+        details = new Array(characters);
         if (players > 0) {
-                hold[0] = new Item("character", "Student", 0, 255, 0, 7, 0);
-                board[7][0].hold = 0;
+                details[0] = new Item("character", "Student", 0, 255, 0, 7, 0);
+                board[7][0].details = 0;
                 board[7][0].obstacle = true;    
         } if (players > 1) {
-                hold[1] = new Item("character", "Lecturer", 255, 36, 0, 16, 0);
-                board[16][0].hold = 1;
+                details[1] = new Item("character", "Lecturer", 255, 36, 0, 16, 0);
+                board[16][0].details = 1;
                 board[16][0].obstacle = true;
         } if (players > 2) {
-                hold[2] = new Item("character", "Administrator", 9, 84, 190, 6, 23);
-                board[6][23].hold = 2;
+                details[2] = new Item("character", "Administrator", 9, 84, 190, 6, 23);
+                board[6][23].details = 2;
                 board[6][23].obstacle = true;
         } if (players > 3) {
-                hold[3] = new Item("character", "Technician", 162, 0, 204, 17, 23);
-                board[17][23].hold = 3;
+                details[3] = new Item("character", "Technician", 162, 0, 204, 17, 23);
+                board[17][23].details = 3;
                 board[17][23].obstacle = true;
         }
         // (name, index, doors, x1, y1, x2, y2)
@@ -403,13 +441,13 @@ function startGame(players)
 function createBoard() 
 {
         // Making a 2D array
-        for (var i = 0; i < COLS; i++) {
-                board[i] = new Array(ROWS);
+        for (var i = 0; i < columns; i++) {
+                board[i] = new Array(rows);
         }
         // Creating cell objects
-        for (var i = 0; i < COLS; i++) {
-                for (var j = 0; j < ROWS; j++) {
-                        board[i][j] = new Cell(i, j);
+        for (var i = 0; i < columns; i++) {
+                for (var j = 0; j < rows; j++) {
+                        board[i][j] = new Coordinate(i, j);
                 }
         }
         // Outline the map
@@ -482,34 +520,36 @@ function verticalObstacleLine(start, end)
 function draw() 
 {
         // Draw board
-        for (var i = 0; i < COLS; i++) {
-                for (var j = 0; j < ROWS; j++) { 
+        for (var i = 0; i < columns; i++) {
+                for (var j = 0; j < rows; j++) { 
                         board[i][j].show(); 
                 }
         }
         drawBoardDetails();
         // Reset drawing
-        gridGraphics.stroke(0)
-        gridGraphics.strokeWeight(1)
+        gridGraphic.stroke(0)
+        gridGraphic.strokeWeight(1)
         // Draw game details
         if (gameState == "inProgress") {
-			    endTurnB.hide();
-				enterRoomB.hide();
+			     endTurnB.hide();
+			     enterRoomB.hide();
+                             accusationB.hide();
+                             guessB.hide();
                 // Highlight where the player can go
-                if (mouseX < 480 && mouseY < 480 && currentCharacter == clientCharacter && !movedPeice) {
-                        if (hold[currentCharacter].i > -1) {
-                                var x = Math.floor(mouseX / 480 * COLS);
-                                var y = Math.floor(mouseY / 480 * ROWS);
-                                if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[x][y]) <= rollValue && board[x][y].obstacle == false) {
-                                        gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b, 72);
-                                        gridGraphics.rect(x * (GRID_WIDTH / COLS), y * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
+                if (mouseX < 480 && mouseY < 480 && currentCharacter == clientCharacter && !clientMoved) {
+                        if (details[currentCharacter].i > -1) {
+                                var x = Math.floor(mouseX / 480 * columns);
+                                var y = Math.floor(mouseY / 480 * rows);
+                                if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[x][y]) <= roll && board[x][y].obstacle == false) {
+                                        gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b, 72);
+                                        gridGraphic.rect(x * (gridWidth / columns), y * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                                 }
-                        } else if (hold[currentCharacter].i == -1) {
-                                var x = Math.floor(mouseX / 480 * COLS);
-                                var y = Math.floor(mouseY / 480 * ROWS);
-                                if (rooms[hold[currentCharacter].room].pathFrom(x, y, rollValue -1) && !board[x][y].obstacle) {
-                                        gridGraphics.fill(hold[currentCharacter].r, hold[currentCharacter].g, hold[currentCharacter].b, 72);
-                                        gridGraphics.rect(x * (GRID_WIDTH / COLS), y * (GRID_HEIGHT / ROWS), (GRID_WIDTH / COLS) - 1, (GRID_HEIGHT / ROWS) - 1);
+                        } else if (details[currentCharacter].i == -1) {
+                                var x = Math.floor(mouseX / 480 * columns);
+                                var y = Math.floor(mouseY / 480 * rows);
+                                if (rooms[details[currentCharacter].room].pathFrom(x, y, roll -1) && !board[x][y].obstacle) {
+                                        gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b, 72);
+                                        gridGraphic.rect(x * (gridWidth / columns), y * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                                 }
                         }
                 }
@@ -518,19 +558,21 @@ function draw()
                 for (var i = 0; i < characters; i++) {
                         ellipseMode(CENTER);
                         if (i == currentCharacter) {
-                                charactersGraphics.fill(hold[i].r, hold[i].g, hold[i].b);
+                                charactersGraphics.fill(details[i].r, details[i].g, details[i].b);
                         } else {
-                                charactersGraphics.fill(hold[i].r, hold[i].g, hold[i].b, 72);
+                                charactersGraphics.fill(details[i].r, details[i].g, details[i].b, 72);
                         }
                         charactersGraphics.ellipse((12 + 24 * i), 12, 20);
                 }
                 // Ticker text
                 charactersGraphics.fill(255);
-                charactersGraphics.text(hold[currentCharacter].name + "'s turn", 12 + 24 * characters, 18);
+                charactersGraphics.text(details[currentCharacter].name + "'s turn", 12 + 24 * characters, 18);
                 // End turn button
                 if (currentCharacter == clientCharacter) {
                         endTurnB.show();
 						enterRoomB.show();
+                                                accusationB.show();
+                                                guessB.show();
                 }
         }
         
@@ -540,11 +582,11 @@ function draw()
                 majorMiscGraphics.text(readyClients + ' out of ' + connections + ' clients are ready', 30, 30);
                 majorMiscGraphics.text('Game will start when all players are ready', 30, 50);
                 majorMiscGraphics.text('Click READY when you are ready to play', 30, 70);
-                majorMiscGraphics.text('Your client status: ' + readyStatus, 30, 90);
+                majorMiscGraphics.text('Your client status: ' + status, 30, 90);
                 readyB.show();
 
         }
-        if (gameState == "inProgress" && gotClientHoldValue) {
+        if (gameState == "inProgress" && gotClientDetails) {
                 /*
                 buttonUp.show();
                 buttonDown.show();
@@ -553,270 +595,247 @@ function draw()
                 */
                 readyB.hide();
 				cancelB.hide();
-                if (selectingScenario) {
+                if (makingChoice) {
 						cancelB.show();
-                        majorMiscGraphics.text('MAKING ACCUSATION', 30, 30);
-                        majorMiscGraphics.text('Selection ONE card from each category', 30, 50);
-                        if (scenario[0].length < 1) {
+                        majorMiscGraphics.text('Making accusation/guess with room: ' + rooms[details[currentCharacter].room].name, 30, 30);
+                        majorMiscGraphics.text('Select a suspect and a weapon', 30, 50);
+                        if (choice[0].length < 1) {
                                 // List suspects
                                 for (var i = 0; i < suspectCards.length; i++) {
                                         majorMiscGraphics.text(suspectCards[i], 60, 70 + 20*i);
                                 }
-                        } else if (scenario[1].length < 1) {
+                        } else if (choice[1].length < 1) {
                                 // List weapons
-                                for (var i = 0; i < weaponCards.length; i++) {
-                                        majorMiscGraphics.text(weaponCards[i], 60, 70 + 20*i);
-                                }
-                        } else if (scenario[2].length < 1) {
-                                // List rooms
-                                for (var i = 0; i < roomCards.length; i++) {
-                                        majorMiscGraphics.text(roomCards[i], 60, 70 + 20*i);
+                                for (var i = 0; i < methodCards.length; i++) {
+                                        majorMiscGraphics.text(methodCards[i], 60, 70 + 20*i);
                                 }
                         } else {
                                 // Error, all cards already chosen
-                                majorMiscGraphics.text('All scenario cards chosen, please wait...', 30, 70);
+                                majorMiscGraphics.text('All choice cards chosen, please wait...', 30, 70);
                         }
-                } else if (pickingCards) {
-                        majorMiscGraphics.text('Pick a card to privately show to ' + hold[currentCharacter].name, 30, 30);
-                        for (var i = 0; i < pickFrom.length; i++) {
-                                majorMiscGraphics.text(pickFrom[i], 50, 50 + 20 * i);
+                } else if (choosing) {
+                        majorMiscGraphics.text('Pick a card to privately show to ' + details[currentCharacter].name, 30, 30);
+                        for (var i = 0; i < choosingFrom.length; i++) {
+                                majorMiscGraphics.text(choosingFrom[i], 50, 50 + 20 * i);
                         }
                         
                 } else {
                         majorMiscGraphics.text('Game started with ' + characters + ' players', 30, 30);
-                        majorMiscGraphics.text('Your character is ' + hold[clientCharacter].name, 30, 50);
+                        majorMiscGraphics.text('Your character is ' + details[clientCharacter].name, 30, 50);
                         if (clientCharacter == currentCharacter) {
-                                majorMiscGraphics.text('You rolled a ' + rollValue, 30, 70);
+                                majorMiscGraphics.text('You rolled a ' + roll, 30, 70);
                         } else {
-                                majorMiscGraphics.text(hold[currentCharacter].name + ' rolled a ' + rollValue, 30, 70);
+                                majorMiscGraphics.text(details[currentCharacter].name + ' rolled a ' + roll, 30, 70);
                         }
                         majorMiscGraphics.text('The cards in your (private) hand are:', 30, 90);
-                        for (var i = 0; i < clientHand.length; i++) {
-                                majorMiscGraphics.text(clientHand[i], 50, 110 + i*20);
+                        for (var i = 0; i < clientCards.length; i++) {
+                                majorMiscGraphics.text(clientCards[i], 50, 110 + i*20);
                         }
-                        accusationB.show();
-                        guessB.show();
                 }
         }
         // Draw rooms
         if (gameState == "inProgress") {
-                for (var i = 0; i < ROOM_CONST; i++) {
+                for (var i = 0; i < roomNum; i++) {
                         rooms[i].show();
                 }
         }
-        copy(gridGraphics, 0, 0, 480, 480, 0, 0, 480, 480);
+        copy(gridGraphic, 0, 0, 480, 480, 0, 0, 480, 480);
         copy(charactersGraphics, 0, 0, 480, 24, 0, 480, 480, 24);
         copy(majorMiscGraphics, 0, 0, 480, 480, 480, 0, 480, 480);
 }
 function drawBoardDetails() 
 {
         // Server Room
-        gridGraphics.fill(0, 0, 0);
-        gridGraphics.strokeWeight(1);
-        gridGraphics.line(7*20 -1, 0 -1, 7*20 -1, 4*20 -1);
-        gridGraphics.line(0 -1, 4*20 -1, 7*20 -1, 4*20 -1);
-        gridGraphics.fill(239,176,184);
-        gridGraphics.rect(0 -1, 0 -1, 7*20 -1, 4*20 -1);
+        gridGraphic.fill(0, 0, 0);
+        gridGraphic.strokeWeight(1);
+        gridGraphic.line(7*20 -1, 0 -1, 7*20 -1, 4*20 -1);
+        gridGraphic.line(0 -1, 4*20 -1, 7*20 -1, 4*20 -1);
+        gridGraphic.fill(239,176,184);
+        gridGraphic.rect(0 -1, 0 -1, 7*20 -1, 4*20 -1);
         // Seminar Room
-        gridGraphics.fill(0, 0, 0);
-        gridGraphics.line(9*20 , 0 , 9*20 , 7*20 - 1);
-        gridGraphics.line(15*20-1, 0 , 15*20-1, 7*20 - 1);
-        gridGraphics.line(9*20 - 1, 7*20 - 2, 15*20 - 1, 7*20 - 2);
-        gridGraphics.fill(254,242,202);
-        gridGraphics.rect( 9*20  , 0 - 1, 6*20 - 2, 7*20 - 1);
+        gridGraphic.fill(0, 0, 0);
+        gridGraphic.line(9*20 , 0 , 9*20 , 7*20 - 1);
+        gridGraphic.line(15*20-1, 0 , 15*20-1, 7*20 - 1);
+        gridGraphic.line(9*20 - 1, 7*20 - 2, 15*20 - 1, 7*20 - 2);
+        gridGraphic.fill(254,242,202);
+        gridGraphic.rect( 9*20  , 0 - 1, 6*20 - 2, 7*20 - 1);
         // Study Room
-        gridGraphics.fill(0, 0, 0);
-        gridGraphics.line(17*20, 0, 17*20, 7*20 -1);
-        gridGraphics.line(336, 120-1, 480, 120-1);
-        gridGraphics.fill(227,239,217);
-        gridGraphics.rect(17*20, 0 -1, 7*20 -1, 7*20-1);
+        gridGraphic.fill(0, 0, 0);
+        gridGraphic.line(17*20, 0, 17*20, 7*20 -1);
+        gridGraphic.line(336, 120-1, 480, 120-1);
+        gridGraphic.fill(227,239,217);
+        gridGraphic.rect(17*20, 0 -1, 7*20 -1, 7*20-1);
         // Middle
-        gridGraphics.stroke(0);
-        gridGraphics.line(190,8*20,280,160);
-        gridGraphics.line(280,160,280,280);
-        gridGraphics.line(280,280,180,280);
-        gridGraphics.line(180,280,180,160);
+        gridGraphic.stroke(0);
+        gridGraphic.line(190,8*20,280,160);
+        gridGraphic.line(280,160,280,280);
+        gridGraphic.line(280,280,180,280);
+        gridGraphic.line(180,280,180,160);
               
-        gridGraphics.fill(179,198,231);
-        gridGraphics.rect(9*20 , 8*20, 5*20-1, 6*20-1);
-        gridGraphics.strokeWeight(1);
+        gridGraphic.fill(179,198,231);
+        gridGraphic.rect(9*20 , 8*20, 5*20-1, 6*20-1);
+        gridGraphic.strokeWeight(1);
         // Main Hall
-        gridGraphics.fill(0,0,0);
-        gridGraphics.line(0, 120, 120 - 1, 120);
-        gridGraphics.line(120 -2, 120, 120 -2, 7*20);
-        gridGraphics.line(120 -1, 7*20, 7*20-1, 7*20);
-        gridGraphics.line(7*20-2, 7*20, 7*20-2, 200 -1);
-        gridGraphics.line(7*20 -2, 200-2, 120-2, 200-2);
-        gridGraphics.line(120-2, 200-2, 120-2, 220-2);
-        gridGraphics.line(0 -1, 220-2, 120-1, 220-2);
-        gridGraphics.fill(222,234,246);
-        gridGraphics.rect(-1, 120, 120-1, 100 -2);
-        gridGraphics.stroke(222,234,246);
-        gridGraphics.rect(120-3, 140+1, 20, 60-4);
+        gridGraphic.fill(0,0,0);
+        gridGraphic.line(0, 120, 120 - 1, 120);
+        gridGraphic.line(120 -2, 120, 120 -2, 7*20);
+        gridGraphic.line(120 -1, 7*20, 7*20-1, 7*20);
+        gridGraphic.line(7*20-2, 7*20, 7*20-2, 200 -1);
+        gridGraphic.line(7*20 -2, 200-2, 120-2, 200-2);
+        gridGraphic.line(120-2, 200-2, 120-2, 220-2);
+        gridGraphic.line(0 -1, 220-2, 120-1, 220-2);
+        gridGraphic.fill(222,234,246);
+        gridGraphic.rect(-1, 120, 120-1, 100 -2);
+        gridGraphic.stroke(222,234,246);
+        gridGraphic.rect(120-3, 140+1, 20, 60-4);
         // Convenors Office
-        gridGraphics.fill(0);
-        gridGraphics.stroke(0);
-        gridGraphics.line(320, 180, 480, 180);
-        gridGraphics.line(320, 180, 320, 320);
-        gridGraphics.line(320, 320, 400, 320);
-        gridGraphics.line(400, 320, 400, 340);
-        gridGraphics.line(400, 340, 480, 340);      
-        gridGraphics.fill(240,192,240);
-        gridGraphics.stroke(240,192,240);
-        gridGraphics.rect(320+1, 180+1, 80-2, 140-3);
-        gridGraphics.stroke(240,192,240);
-        gridGraphics.rect(400+1, 180+1, 80-3, 160-3);
-        gridGraphics.rect(330, 190, 140, 120);
+        gridGraphic.fill(0);
+        gridGraphic.stroke(0);
+        gridGraphic.line(320, 180, 480, 180);
+        gridGraphic.line(320, 180, 320, 320);
+        gridGraphic.line(320, 320, 400, 320);
+        gridGraphic.line(400, 320, 400, 340);
+        gridGraphic.line(400, 340, 480, 340);      
+        gridGraphic.fill(240,192,240);
+        gridGraphic.stroke(240,192,240);
+        gridGraphic.rect(320+1, 180+1, 80-2, 140-3);
+        gridGraphic.stroke(240,192,240);
+        gridGraphic.rect(400+1, 180+1, 80-3, 160-3);
+        gridGraphic.rect(330, 190, 140, 120);
 
         // Library
-        gridGraphics.fill(0);
-        gridGraphics.stroke(0);
-        gridGraphics.line(0, 240, 120 -1, 240);
-        gridGraphics.line(120 -2, 240, 120-2, 340 -1);
-        gridGraphics.line(0, 340 -2, 120 -2, 340 -2);
-        gridGraphics.fill(243,203,238);
-        gridGraphics.rect(0 -1, 240, 120 -1, 100 -2);
+        gridGraphic.fill(0);
+        gridGraphic.stroke(0);
+        gridGraphic.line(0, 240, 120 -1, 240);
+        gridGraphic.line(120 -2, 240, 120-2, 340 -1);
+        gridGraphic.line(0, 340 -2, 120 -2, 340 -2);
+        gridGraphic.fill(243,203,238);
+        gridGraphic.rect(0 -1, 240, 120 -1, 100 -2);
         // Admin Office
-        gridGraphics.fill(0);
-        gridGraphics.stroke(0);
-        gridGraphics.line(0, 380, 120, 380);
-        gridGraphics.line(120, 380, 120, 380+(20*6));
-        gridGraphics.fill(251,227,215);
-        gridGraphics.stroke(255);
-        gridGraphics.rect(0, 380+1, 120 -2, 100 -3);
+        gridGraphic.fill(0);
+        gridGraphic.stroke(0);
+        gridGraphic.line(0, 380, 120, 380);
+        gridGraphic.line(120, 380, 120, 380+(20*6));
+        gridGraphic.fill(251,227,215);
+        gridGraphic.stroke(255);
+        gridGraphic.rect(0, 380+1, 120 -2, 100 -3);
         // Lecture theatre
-        gridGraphics.fill(0);
-        gridGraphics.stroke(0);
-        gridGraphics.line(160-2, 340, 160+(8*20) -1, 340);
-        gridGraphics.line(160 -2, 340, 160-2, 340+(7*20));
-        gridGraphics.line(320 -2, 340, 320-2, 340+(7*20));
-        gridGraphics.fill(240,185,182);
-        gridGraphics.rect(160, 340, 160-2, 140 -1);
+        gridGraphic.fill(0);
+        gridGraphic.stroke(0);
+        gridGraphic.line(160-2, 340, 160+(8*20) -1, 340);
+        gridGraphic.line(160 -2, 340, 160-2, 340+(7*20));
+        gridGraphic.line(320 -2, 340, 320-2, 340+(7*20));
+        gridGraphic.fill(240,185,182);
+        gridGraphic.rect(160, 340, 160-2, 140 -1);
         // Computer Suite
-        gridGraphics.fill(0);
-        gridGraphics.line(360, 380, 480, 380);
-        gridGraphics.line(360, 380, 360, 480);
-        gridGraphics.fill(216,216,216);
-        gridGraphics.rect(360, 380, 120-1, 100 -1);
+        gridGraphic.fill(0);
+        gridGraphic.line(360, 380, 480, 380);
+        gridGraphic.line(360, 380, 360, 480);
+        gridGraphic.fill(216,216,216);
+        gridGraphic.rect(360, 380, 120-1, 100 -1);
         // Text
-        gridGraphics.noFill(255);
-        gridGraphics.noStroke();
-        gridGraphics.textSize(12);
-        gridGraphics.stroke(0);
-        gridGraphics.text("Server Room", 10, 20);
-        gridGraphics.text("Seminar Room", 200, 20);
-        gridGraphics.text("Study Room", 400, 20);
-        gridGraphics.text("Main Hall", 10, 140);
-        gridGraphics.text("Convenors Office", 360, 210);
-        gridGraphics.text("Library", 10, 280);
-        gridGraphics.text("Admin Office", 10, 425);
-        gridGraphics.text("Lecture Theatre", 200, 360);
-        gridGraphics.text("Computer Suite", 370, 420);
+        gridGraphic.noFill(255);
+        gridGraphic.noStroke();
+        gridGraphic.textSize(12);
+        gridGraphic.stroke(0);
+        gridGraphic.text("Server Room", 10, 20);
+        gridGraphic.text("Seminar Room", 200, 20);
+        gridGraphic.text("Study Room", 400, 20);
+        gridGraphic.text("Main Hall", 10, 140);
+        gridGraphic.text("Convenors Office", 360, 210);
+        gridGraphic.text("Library", 10, 280);
+        gridGraphic.text("Admin Office", 10, 425);
+        gridGraphic.text("Lecture Theatre", 200, 360);
+        gridGraphic.text("Computer Suite", 370, 420);
         // Doors
-        gridGraphics.stroke(255,216,101);
-        gridGraphics.strokeWeight(4);
+        gridGraphic.stroke(255,216,101);
+        gridGraphic.strokeWeight(4);
         //server room door1
-        gridGraphics.line(6*20 , 4*20 , 7*20 , 4*20 );
+        gridGraphic.line(6*20 , 4*20 , 7*20 , 4*20 );
         //main hall door 1
-        gridGraphics.line(7*20 , 8*20, 7*20, 9*20 );
+        gridGraphic.line(7*20 , 8*20, 7*20, 9*20 );
         //main hall door 2
-        gridGraphics.line(3*20 , 11*20, 4*20 , 11*20 );
+        gridGraphic.line(3*20 , 11*20, 4*20 , 11*20 );
         //library door 1
-        gridGraphics.line(0*20 , 12*20, 1*20 , 12*20 );
+        gridGraphic.line(0*20 , 12*20, 1*20 , 12*20 );
 		//library door 2
-        gridGraphics.line(6*20 , 14*20, 6*20, 15*20 );
+        gridGraphic.line(6*20 , 14*20, 6*20, 15*20 );
 		//admin office door 1
-        gridGraphics.line(5*20 , 19*20, 6*20 , 19*20 );
+        gridGraphic.line(5*20 , 19*20, 6*20 , 19*20 );
 		//lecture Theatre door 1
-        gridGraphics.line(8*20 , 19*20, 8*20, 20*20 );
+        gridGraphic.line(8*20 , 19*20, 8*20, 20*20 );
         //doors 2 and 3 are not possible - max 2 doors currently
         //lecture theatre door 2
-        //gridGraphics.line(10*20 , 17*20, 11*20, 17*20 );
+        //gridGraphic.line(10*20 , 17*20, 11*20, 17*20 );
 		//lecture theatre door 3        
-        //gridGraphics.line(13*20 , 17*20, 14*20, 17*20 );
+        //gridGraphic.line(13*20 , 17*20, 14*20, 17*20 );
 		//lecture theatre door 4
-        gridGraphics.line(16*20 , 19*20, 16*20, 20*20 );
+        gridGraphic.line(16*20 , 19*20, 16*20, 20*20 );
 		//computer suite door 1
-        gridGraphics.line(19*20 , 19*20, 20*20, 19*20 );
+        gridGraphic.line(19*20 , 19*20, 20*20, 19*20 );
 		//convenors office door 1		
-        gridGraphics.line(16*20 , 13*20, 16*20, 14*20 );
+        gridGraphic.line(16*20 , 13*20, 16*20, 14*20 );
 		//convenors office door 2
-        gridGraphics.line(17*20 , 9*20, 18*20, 9*20 );
+        gridGraphic.line(17*20 , 9*20, 18*20, 9*20 );
         //study room door 1
-        gridGraphics.line(17*20 , 7*20, 18*20, 7*20 );
+        gridGraphic.line(17*20 , 7*20, 18*20, 7*20 );
         //seminar room door 1
-        gridGraphics.line(11*20 , 7*20, 12*20, 7*20 );
+        gridGraphic.line(11*20 , 7*20, 12*20, 7*20 );
 		//seminar room door 2
-        gridGraphics.line(9*20 , 4*20, 9*20, 5*20 );
+        gridGraphic.line(9*20 , 4*20, 9*20, 5*20 );
 }
 function mouseClicked() 
 {
         if (mouseX < 480 && mouseY < 480) {
 			// Calculate the x-pos and y-pos of the mouse with respect to the grid
-			var x = Math.floor(mouseX / 480 * COLS);
-			var y = Math.floor(mouseY / 480 * ROWS);
+			var x = Math.floor(mouseX / 480 * columns);
+			var y = Math.floor(mouseY / 480 * rows);
 			// If path short enough with respect to roll value and destination not an obstacle, move item && if not in room
-			if (hold[currentCharacter].i > -1) {
-				if ( path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[x][y]) <= rollValue && board[x][y].obstacle == false && currentCharacter == clientCharacter && !movedPeice) {
+			if (details[currentCharacter].i > -1) {
+				if ( path(board[details[currentCharacter].i][details[currentCharacter].j] , board[x][y]) <= roll && board[x][y].obstacle == false && currentCharacter == clientCharacter && !clientMoved) {
 					socket.emit('moveItem',currentCharacter, x, y);
 				}
 			}
-			if (hold[currentCharacter].i == -1) {
-				var roomIndex = hold[currentCharacter].room;
-				if(rooms[roomIndex].pathFrom(x, y, rollValue)) {
+			if (details[currentCharacter].i == -1) {
+				var roomIndex = details[currentCharacter].room;
+				if(rooms[roomIndex].pathFrom(x, y, roll)) {
 					socket.emit('leaveRoom', currentCharacter, roomIndex, x, y);
 				}
-			}	
-		}
-        // Major Misc
-        if (!selectingScenario && !pickingCards) {
-                if (mouseX > 480 + 30 && mouseX < 480 + 30 + 300 && mouseY > 110 + clientHand.length * 20 + 20 && mouseY < 110 + clientHand.length * 20 + 40 && currentCharacter == clientCharacter) {
-                        // Make an accusation
-                        scenarioContext = "accusation";
-                        selectingScenario = true;
-                }
-                if (mouseX > 480 + 30 && mouseX < 480 + 30 + 300 && mouseY > 110 + clientHand.length * 20 && mouseY < 110 + clientHand.length * 20 + 20 && currentCharacter == clientCharacter) {
-                        if (hold[currentCharacter].room > -1) {
-                                // Make a mere suggestion
-                                scenarioContext = "suggestion";
-                                selectingScenario = true;
+			}
+                        if (clientMoved){
+                                alert("You have already moved!");
                         }
-                }
-        } else if (pickingCards) {
-                if (mouseX > 540 && mouseX < 700 && mouseY > 30 && mouseY < pickFrom.length * 20 + 35) {
+
+        // Major Misc
+        } else if (choosing) {
+                if (mouseX > 540 && mouseX < 700 && mouseY > 30 && mouseY < choosingFrom.length * 20 + 35) {
                         var index = Math.floor((mouseY - 35)/20);
-                        if (isInArray(clientHand, pickFrom[index])) {
-                                socket.emit('pickedCard', pickFrom[index]);
-                                pickingCards = false;
-                                pickFrom = ["", "", ""];
+                        if (isInArray(clientCards, choosingFrom[index])) {
+                                socket.emit('pickedCard', choosingFrom[index]);
+                                choosing = false;
+                                choosingFrom = ["", "", ""];
                         }
                 }
         } else {
-                // Chose cards
-                if (scenario[0].length < 1) {
+                // Choose cards
+                if (choice[0].length < 1) {
                         // Chosing a suspect
                         if (mouseX > 540 && mouseX < 700 && mouseY > 50 && mouseY < suspectCards.length * 20 + 55) {
                                 var index = Math.floor((mouseY - 55)/20);
-                                scenario[0] = suspectCards[index];
+                                choice[0] = suspectCards[index];
                         }
-                } else if (scenario[1].length < 1) {
+                } else if (choice[1].length < 1) {
                         // Chosing a weapon
-                        if (mouseX > 540 && mouseX < 700 && mouseY > 50 && mouseY < weaponCards.length * 20 + 55) {
+                        if (mouseX > 540 && mouseX < 700 && mouseY > 50 && mouseY < methodCards.length * 20 + 55) {
                                 var index = Math.floor((mouseY - 55)/20);
-                                scenario[1] = weaponCards[index];
-                        }
-                } else if (scenario[2].length < 2) {
-                        // Chosing a room
-                        if (mouseX > 540 && mouseX < 700 && mouseY > 50 && mouseY < roomCards.length * 20 + 55) {
-                                var index = Math.floor((mouseY - 55)/20);
-                                if (rooms[hold[currentCharacter].room].name == roomCards[index]) {
-                                        scenario[2] = roomCards[index];
-                                        if (scenarioContext == "accusation") {
-                                                socket.emit('makeAccusation', scenario[0], scenario[1], scenario[2]);
-                                        } else if (scenarioContext == "suggestion") {
-                                                socket.emit("makeSuggestion", scenario[0], scenario[1], scenario[2]);
-                                                selectingScenario = false;
-                                        }
+                                choice[1] = methodCards[index];
+                                // Select room from the room player is in
+                                choice[2] = rooms[details[currentCharacter].room].name;
+                                if (choiceName == "accusation") {
+                                        socket.emit('makeAccusation', choice[0], choice[1], choice[2]);
+                                } else if (choiceName == "suggestion") {
+                                        socket.emit("makeSuggestion", choice[0], choice[1], choice[2]);
+                                        makingChoice = false;
                                 }
                         }
                 }
@@ -831,8 +850,8 @@ function isInArray(array, elt)
 function path(start, end) 
 {
         // Initialise pathfinding variables
-        for (var i = 0; i < COLS; i++) { 
-                for (var j = 0; j < ROWS; j++) { 
+        for (var i = 0; i < columns; i++) { 
+                for (var j = 0; j < rows; j++) { 
                         board[i][j].pathInit(); 
                 } 
         }
@@ -897,110 +916,116 @@ function endTurn() {
 }
 
 function enterRoom() {
-	if (hold[currentCharacter].i > -1) {
+	if (details[currentCharacter].i > -1) {
                 // Server Room
-                if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[6][4]) <= 0) { 
+                if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[6][4]) <= 0) { 
                         socket.emit('enterRoom', currentCharacter, 'Server Room', 0);       
                 // Seminar Room
-                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[8][4]) <= 0) { 
+                } else if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[8][4]) <= 0) { 
                         socket.emit('enterRoom', currentCharacter, 'Seminar Room', 1);
-                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[11][7]) <= 0) {
+                } else if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[11][7]) <= 0) {
                         socket.emit('enterRoom', currentCharacter, 'Seminar Room', 1);                        
                 // Study Room
-                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[17][7]) <= 0) {
+                } else if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[17][7]) <= 0) {
                         socket.emit('enterRoom', currentCharacter, 'Study Room', 2);                    
                 // Convenors Office
-                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[17][8]) <= 0) {
+                } else if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[17][8]) <= 0) {
                         socket.emit('enterRoom', currentCharacter, 'Convenors Office', 4);
-                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[15][13]) <= 0) { 
+                } else if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[15][13]) <= 0) { 
                         socket.emit('enterRoom', currentCharacter, 'Convenors Office', 4);
                 // Computer Suite
-                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[19][18]) <= 0) {
+                } else if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[19][18]) <= 0) {
                         socket.emit('enterRoom', currentCharacter, 'Computer Suite', 8);
                 // Lecture Theatre
-                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[16][19]) <= 0) {
+                } else if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[16][19]) <= 0) {
                         socket.emit('enterRoom', currentCharacter, 'Lecture Theatre', 7);
-                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[7][19]) <= 0) {
+                } else if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[7][19]) <= 0) {
                         socket.emit('enterRoom', currentCharacter, 'Lecture Theatre', 7);                     
                 // Admin Office
-                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[5][18]) <= 0) {
+                } else if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[5][18]) <= 0) {
                         socket.emit('enterRoom', currentCharacter, 'Admin Office', 6);
                 // Library
-                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[6][14]) <= 0) {
+                } else if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[6][14]) <= 0) {
                         socket.emit('enterRoom', currentCharacter, 'Library', 5);
-                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[0][11]) <= 0) {
+                } else if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[0][11]) <= 0) {
                         socket.emit('enterRoom', currentCharacter, 'Library', 5);
                 // Main Hall
-                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[3][11]) <= 0) {
+                } else if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[3][11]) <= 0) {
                         socket.emit('enterRoom', currentCharacter, 'Main Hall', 3);
-                } else if (path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[7][8]) <= 0) {
+                } else if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[7][8]) <= 0) {
                         socket.emit('enterRoom', currentCharacter, 'Main Hall', 3);
                 }
+                if (!clientMoved){
+                        alert("You must be by a room door to enter a room");
+                }
 		else {
-			alert("You must be by a room door to enter a room");
+			alert("You have already moved!");
 		}
 	}
+        else if (details[currentCharacter].room == -1) {
+                alert("You are already in a room!");
+        }
 }
 
 function ready() {
         if (gameState == "notReady") {
                 socket.emit('readyGame');
-                readyStatus = "READY";
+                status = "READY";
         }
 }
 
 function cancel() {
-	scenario = ["", "", ""];
-	selectingScenario = false;
+	choice = ["", "", ""];
+	makingChoice = false;
 }
 
 function makeGuess() {
-        if (hold[currentCharacter].room = -1) {
+        if (details[currentCharacter].room == -1) {
                 alert("You must be in a room to make a guess");
         }
         else {
-                scenarioContext = "guess";
-                selectingScenario = true;
+                choiceName = "guess";
+                makingChoice = true;
         }
 }
 
 function makeAccusation() {
-        if (hold[currentCharacter].room = -1) {
+        if (details[currentCharacter].room == -1) {
                 alert("You must be in a room to make an accusation");
         }
         else {
-                scenarioContext = "accusation";
-                selectingScenario = true;
+                choiceName = "accusation";
+                makingChoice = true;
         }
 }
 
 function moveUp() {
-        if (hold[currentCharacter].i > -1) {
-                if ( path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[x][y]) <= rollValue && board[x][y].obstacle == false && currentCharacter == clientCharacter && !movedPeice) {
+        if (details[currentCharacter].i > -1) {
+                if ( path(board[details[currentCharacter].i][details[currentCharacter].j] , board[x][y]) <= roll && board[x][y].obstacle == false && currentCharacter == clientCharacter && !clientMoved) {
                         socket.emit('moveItem',currentCharacter, x, y);
                 }
         }
 }
 
 function moveDown() {
-        if (hold[currentCharacter].i > -1) {
-                if ( path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[x][y]) <= rollValue && board[x][y].obstacle == false && currentCharacter == clientCharacter && !movedPeice) {
+        if (details[currentCharacter].i > -1) {
+                if ( path(board[details[currentCharacter].i][details[currentCharacter].j] , board[x][y]) <= roll && board[x][y].obstacle == false && currentCharacter == clientCharacter && !clientMoved) {
                         socket.emit('moveItem',currentCharacter, x, y);
                 }
         }
 }
 
 function moveLeft() {
-        if (hold[currentCharacter].i > -1) {
-                if ( path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[x][y]) <= rollValue && board[x][y].obstacle == false && currentCharacter == clientCharacter && !movedPeice) {
+        if (details[currentCharacter].i > -1) {
+                if ( path(board[details[currentCharacter].i][details[currentCharacter].j] , board[x][y]) <= roll && board[x][y].obstacle == false && currentCharacter == clientCharacter && !clientMoved) {
                         socket.emit('moveItem',currentCharacter, x, y);
                 }
         }
 }
 
 function moveRight() {
-        if (hold[currentCharacter].i > -1) {
-                if ( path(board[hold[currentCharacter].i][hold[currentCharacter].j] , board[x][y]) <= rollValue && board[x][y].obstacle == false && currentCharacter == clientCharacter && !movedPeice) {
+        if (details[currentCharacter].i > -1) {
+                if ( path(board[details[currentCharacter].i][details[currentCharacter].j] , board[x][y]) <= roll && board[x][y].obstacle == false && currentCharacter == clientCharacter && !clientMoved) {
                         socket.emit('moveItem',currentCharacter, x, y);
                 }
         }
