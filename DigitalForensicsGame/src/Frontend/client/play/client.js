@@ -40,7 +40,6 @@ var makingChoice = false;
 var choiceName = undefined;
 var choice = ["", "", ""];
 
-<<<<<<< HEAD
 //Define all cards
 var suspectCards = ['Student', 'Lecturer', 'Administrator', 'Technician'];
 var methodCards = ['Data Theft', 'Fraud', 'Malware', 'Brute Force', 'Man-in-the-middle', 'Phishing'];
@@ -76,31 +75,6 @@ socket.on('chat', function(data){
 });
 
 function Coordinate(i, j) 
-=======
-window.onload = function(){
-//Query DOM
-var message = document.getElementById('message');
-	handle = document.getElementById('handle');
-	btn = document.getElementById('send');
-	output = document.getElementById('output');
-
-//Emit events
-	
-btn.addEventListener('click', function(){
-	socket.emit('chat', {
-		message: message.value,
-		handle: handle.value
-	});
-});
-};
-
-//Listen for events
-socket.on('chat', function(data){
-	output.innerHTML += '<p><strong>' + data.handle + ': <strong>' + data.message + '</p>';
-});
-
-function Cell(i, j) 
->>>>>>> refs/remotes/origin/master
 {
         // Cell position
         this.i = i;
@@ -1056,4 +1030,3 @@ function moveRight() {
                 }
         }
 }
-
