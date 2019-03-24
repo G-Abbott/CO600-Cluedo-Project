@@ -3,8 +3,8 @@ p5.dom;
 // Declarations
 //Entire page
 var canvas = undefined;
-const canvasWidth = 480 + 480 ;
-const canvasHeight = 504;
+const canvasWidth = 490 + 480 ;
+const canvasHeight = 514;
 const columns = 24;
 const rows = 24;
 //Board graphic
@@ -53,22 +53,19 @@ const roomNum = 9;
 var rooms = new Array(roomNum);
 
 window.onload = function(){
-//Query DOM
-var message = document.getElementById('message');
-handle = document.getElementById('handle');
-btn = document.getElementById('send');
-output = document.getElementById('output');
-
-//Emit events	
-btn.addEventListener('click', function(){
-	socket.emit('chat', {
-		message: message.value,
-		handle: handle.value
+	var message = document.getElementById('message');
+	handle = document.getElementById('handle');
+	sendB = document.getElementById('send');
+	output = document.getElementById('output');
+	
+	sendB.addEventListener('click', function(){
+		socket.emit('chat', {
+			message: message.value,
+			handle: handle.value
+		});
 	});
-});
 };
 
-//Listen for events
 socket.on('chat', function(data){
 	output.innerHTML += '<p><strong>' + data.handle + ': <strong>' + data.message + '</p>';
 });
@@ -318,6 +315,8 @@ function preload()
         {
                 window.alert(details[currentCharacter].name + ' wins the game!');
                 makingChoice = false;
+				state = "notReady";
+				status = "not ready";
 
         });
 		
@@ -391,12 +390,12 @@ function setup()
         */
         //End turn button
         endTurnB = createButton('End Turn');
-        endTurnB.position(400,481);
+        endTurnB.position(400,491);
         endTurnB.mousePressed(endTurn);
         endTurnB.hide();
 		//Enter Room button
 		enterRoomB = createButton('Enter Room');
-        enterRoomB.position(300,481);
+        enterRoomB.position(300,491);
         enterRoomB.mousePressed(enterRoom);
         enterRoomB.hide();
 		//Cancel button
@@ -553,15 +552,15 @@ function draw()
                 // Highlight the grid if the player can move
                 if (mouseX < 480 && mouseY < 480 && currentCharacter == clientCharacter && !clientMoved) {
                         if (details[currentCharacter].i > -1) {
-                                var x = Math.floor(mouseX / 480 * columns);
-                                var y = Math.floor(mouseY / 480 * rows);
+                                var x = Math.floor((mouseX-10) / 480 * columns);
+                                var y = Math.floor((mouseY-10) / 480 * rows);
                                 if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[x][y]) <= roll && board[x][y].obstacle == false) {
                                         gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b, 72);
                                         gridGraphic.rect(x * (gridWidth / columns), y * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                                 }
                         } else if (details[currentCharacter].i == -1) {
-                                var x = Math.floor(mouseX / 480 * columns);
-                                var y = Math.floor(mouseY / 480 * rows);
+                                var x = Math.floor((mouseX-10) / 480 * columns);
+                                var y = Math.floor((mouseY-10) / 480 * rows);
                                 if (rooms[details[currentCharacter].room].pathFrom(x, y, roll -1) && !board[x][y].obstacle) {
                                         gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b, 72);
                                         gridGraphic.rect(x * (gridWidth / columns), y * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
@@ -602,11 +601,16 @@ function draw()
         sideBarGraphic.background(255);
         if (state == "notReady") {
                 sideBarGraphic.text(readyClients + ' out of ' + connections + ' players are ready', 30, 30);
-                sideBarGraphic.text('Game will start when all players are ready', 30, 50);
-                sideBarGraphic.text('Click READY when you are ready to play', 30, 70);
+                sideBarGraphic.text('More than 1 players are required for the game to start', 30, 50);
+                sideBarGraphic.text('Game will start when all players are ready', 30, 70);
                 sideBarGraphic.text('Your status: ' + status, 30, 90);
-                readyB.show();
-
+				if (status == "ready")
+				{
+					readyB.hide()
+				}
+				else {
+					readyB.show();
+				}
         }
 		
 		//Client actions
@@ -623,7 +627,7 @@ function draw()
                 if (makingChoice) {
 						cancelB.show();
                         sideBarGraphic.text('Making accusation/guess with room: ' + rooms[details[currentCharacter].room].name, 30, 30);
-                        sideBarGraphic.text('Select a suspect and a method', 30, 50);
+                        sideBarGraphic.text('Select a suspect and a method:', 30, 50);
                         if (choice[0].length < 1) {
                                 // List suspects
                                 for (var i = 0; i < suspectCards.length; i++) {
@@ -656,12 +660,14 @@ function draw()
         }
 		
 		//Scale correctly
-        copy(gridGraphic, 0, 0, 480, 480, 0, 0, 480, 480);
-        copy(characterGraphic, 0, 0, 480, 24, 0, 480, 480, 24);
-        copy(sideBarGraphic, 0, 0, 480, 480, 480, 0, 480, 480);
+        copy(gridGraphic, 0, 0, 480, 480, 10, 10, 480, 480);
+        copy(characterGraphic, 0, 0, 480, 24, 10, 490, 480, 24);
+        copy(sideBarGraphic, 0, 0, 480, 480, 490, 10, 480, 480);
 }
+
 function drawBoardDetails() 
 {
+	
         // Server Room
         gridGraphic.fill(0, 0, 0);
         gridGraphic.strokeWeight(1);
@@ -798,16 +804,23 @@ function drawBoardDetails()
         gridGraphic.line(11*20 , 7*20, 12*20, 7*20 );
 		//seminar room door 2
         gridGraphic.line(9*20 , 4*20, 9*20, 5*20 );
+		
+		gridGraphic.stroke(0, 0, 0);
+		gridGraphic.strokeWeight(4);
+		gridGraphic.line(0, 0, 480, 0);
+		gridGraphic.line(480, 0, 480, 480);
+		gridGraphic.line(480, 480, 0, 480);
+		gridGraphic.line(0, 480, 0, 0);
 }
 
 //Mouse click functions, used instead of buttons for moving on the board and selecting cards
 function mouseClicked() 
 {
 		//Movement on board
-        if (mouseX < 480 && mouseY < 480) {
+        if (10 < mouseX && mouseX < 490 && mouseY > 10 && mouseY < 490) {
 			// Calculate the x-pos and y-pos of the mouse with respect to the grid
-			var x = Math.floor(mouseX / 480 * columns);
-			var y = Math.floor(mouseY / 480 * rows);
+			var x = Math.floor((mouseX-10) / 480 * columns);
+			var y = Math.floor((mouseY-10) / 480 * rows);
 			// If path short enough with respect to roll value and destination not an obstacle, move character & if not in room
 			if (details[currentCharacter].i > -1) {
 				if ( path(board[details[currentCharacter].i][details[currentCharacter].j] , board[x][y]) <= roll && board[x][y].obstacle == false && currentCharacter == clientCharacter && !clientMoved) {
@@ -853,8 +866,8 @@ function mouseClicked()
                                 choice[2] = rooms[details[currentCharacter].room].name;
                                 if (choiceName == "accusation") {
                                         socket.emit('makeAccusation', choice[0], choice[1], choice[2]);
-                                } else if (choiceName == "suggestion") {
-                                        socket.emit("makeSuggestion", choice[0], choice[1], choice[2]);
+                                } else if (choiceName == "guess") {
+                                        socket.emit("makeGuess", choice[0], choice[1], choice[2]);
                                         makingChoice = false;
                                 }
                         }
@@ -984,7 +997,7 @@ function enterRoom() {
 			alert("You have already moved!");
 		}
 	}
-    else if (details[currentCharacter].room == -1) {
+    else if (details[currentCharacter].room == 0) {
             alert("You are already in a room!");
     }
 }

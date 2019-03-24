@@ -68,12 +68,15 @@ io.sockets.on('connection', function(socket)
                         console.log(socket.id + ' ready');
                 }
                 if (status == 'notReady' && readyClients == socketConnections) {
-                        startGame(socketConnections);
-                        io.sockets.emit('startGame', socketConnections);
-                        roll = rollDice(6);
-                        io.sockets.emit('roll', roll);
-                        console.log('Dice roll =  ' + roll);
-                        status = 'inProgress';
+						//Require more than 1 player to start
+						if (socketConnections>=2){
+								startGame(socketConnections);
+								io.sockets.emit('startGame', socketConnections);
+								roll = rollDice(6);
+								io.sockets.emit('roll', roll);
+								console.log('Dice roll =  ' + roll);
+								status = 'inProgress';
+						}
                 }
         });
         socket.on('getClientCharacter', function()
