@@ -39,6 +39,7 @@ var clientMoved = false;
 var makingChoice = false;
 var choiceName = undefined;
 var choice = ["", "", ""];
+var madeChoice = false;
 
 //Define all cards
 var suspectCards = ['Student', 'Lecturer', 'Administrator', 'Technician'];
@@ -183,62 +184,62 @@ function Room(name, index, doors, x1, y1, x2, y2)
                         return false;
                 }
         };
-		//Fill all of the rooms on the gameboard
+		//Fill room with players
         this.show = function()
         {
                 if (this.name == "Server Room") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
                                 gridGraphic.stroke(0);
-                                gridGraphic.rect(4 * (gridWidth / columns), 1 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+                                gridGraphic.rect((1 + this.characters.indexOf(currentCharacter)) * (gridWidth / columns), 2 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 } else if (this.name == "Seminar Room") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
                                 gridGraphic.stroke(0);
-                                gridGraphic.rect(10 * (gridWidth / columns), 4 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+                                gridGraphic.rect((10 + this.characters.indexOf(currentCharacter)) * (gridWidth / columns), 2 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 } else if (this.name == "Study Room") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
                                 gridGraphic.stroke(0);
-                                gridGraphic.rect(18 * (gridWidth / columns), 3 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+                                gridGraphic.rect((18 + this.characters.indexOf(currentCharacter)) * (gridWidth / columns), 3 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 } else if (this.name == "Main Hall") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
                                 gridGraphic.stroke(0);
-                                gridGraphic.rect(3 * (gridWidth / columns), 8 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+                                gridGraphic.rect((1 + this.characters.indexOf(currentCharacter)) * (gridWidth / columns), 8 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 } else if (this.name == "Convenors Office") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
                                 gridGraphic.stroke(0);
-                                gridGraphic.rect(18 * (gridWidth / columns), 13 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+                                gridGraphic.rect((18 + this.characters.indexOf(currentCharacter))* (gridWidth / columns), 12 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 } else if (this.name == "Library") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
                                 gridGraphic.stroke(0);
-                                gridGraphic.rect(3 * (gridWidth / columns), 14 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+                                gridGraphic.rect((1 + this.characters.indexOf(currentCharacter)) * (gridWidth / columns), 14 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 } else if (this.name == "Admin Office") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
                                 gridGraphic.stroke(0);
-                                gridGraphic.rect(4 * (gridWidth / columns), 20 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+                                gridGraphic.rect((1 + this.characters.indexOf(currentCharacter))* (gridWidth / columns), 21 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 } else if (this.name == "Lecture Theatre") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
                                 gridGraphic.stroke(0);
-                                gridGraphic.rect(12 * (gridWidth / columns), 20 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+                                gridGraphic.rect((10 + this.characters.indexOf(currentCharacter)) * (gridWidth / columns), 20 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 } else if (this.name == "Computer Suite") {
                         if (this.characters.indexOf(currentCharacter) > -1) {
                                 gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
                                 gridGraphic.stroke(0);
-                                gridGraphic.rect(20 * (gridWidth / columns), 20 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+                                gridGraphic.rect((19 + this.characters.indexOf(currentCharacter)) * (gridWidth / columns), 21 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                         };
                 }
         };
@@ -625,6 +626,8 @@ function draw()
                 readyB.hide();
 				cancelB.hide();
                 if (makingChoice) {
+						accusationB.hide();
+						guessB.hide();
 						cancelB.show();
                         sideBarGraphic.text('Making accusation/guess with room: ' + rooms[details[currentCharacter].room].name, 30, 30);
                         sideBarGraphic.text('Select a suspect and a method:', 30, 50);
@@ -764,10 +767,10 @@ function drawBoardDetails()
         gridGraphic.text("Study Room", 400, 20);
         gridGraphic.text("Main Hall", 10, 140);
         gridGraphic.text("Convenors Office", 360, 210);
-        gridGraphic.text("Library", 10, 280);
-        gridGraphic.text("Admin Office", 10, 425);
+        gridGraphic.text("Library", 10, 270);
+        gridGraphic.text("Admin Office", 10, 415);
         gridGraphic.text("Lecture Theatre", 200, 360);
-        gridGraphic.text("Computer Suite", 370, 420);
+        gridGraphic.text("Computer Suite", 370, 415);
         // Doors
         gridGraphic.stroke(255,216,101);
         gridGraphic.strokeWeight(4);
@@ -840,9 +843,9 @@ function mouseClicked()
         // Side bar 
 		// Picking cards to show
         } else if (choosing) {
-                if (mouseX > 540 && mouseX < 700 && mouseY > 30 && mouseY < choosingFrom.length * 20 + 35) {
-                        var index = Math.floor((mouseY - 35)/20);
-                        if (isInArray(clientCards, choosingFrom[index])) {
+                if (mouseX > 550 && mouseX < 710 && mouseY > 45 && mouseY < choosingFrom.length * 20 + 45) {
+                        var index = Math.floor((mouseY - 45)/20);
+                        if (arrayContains(clientCards, choosingFrom[index])) {
                                 socket.emit('pickedCard', choosingFrom[index]);
                                 choosing = false;
                                 choosingFrom = ["", "", ""];
@@ -853,22 +856,24 @@ function mouseClicked()
                 // Choose cards
                 if (choice[0].length < 1) {
                         // Chosing a suspect
-                        if (mouseX > 540 && mouseX < 700 && mouseY > 50 && mouseY < suspectCards.length * 20 + 55) {
-                                var index = Math.floor((mouseY - 55)/20);
+                        if (mouseX > 550 && mouseX < 710 && mouseY > 65 && mouseY < suspectCards.length * 20 + 65) {
+                                var index = Math.floor((mouseY - 65)/20);
                                 choice[0] = suspectCards[index];
                         }
                 } else if (choice[1].length < 1) {
                         // Chosing a method
-                        if (mouseX > 540 && mouseX < 700 && mouseY > 50 && mouseY < methodCards.length * 20 + 55) {
-                                var index = Math.floor((mouseY - 55)/20);
+                        if (mouseX > 550 && mouseX < 710 && mouseY > 65 && mouseY < methodCards.length * 20 + 65) {
+                                var index = Math.floor((mouseY - 65)/20);
                                 choice[1] = methodCards[index];
                                 // Select room from the room player is in
                                 choice[2] = rooms[details[currentCharacter].room].name;
                                 if (choiceName == "accusation") {
                                         socket.emit('makeAccusation', choice[0], choice[1], choice[2]);
+										madeChoice = true;
                                 } else if (choiceName == "guess") {
                                         socket.emit("makeGuess", choice[0], choice[1], choice[2]);
                                         makingChoice = false;
+										madeChoice = true;
                                 }
                         }
                 }
@@ -946,7 +951,8 @@ function arrayRemove(array, item)
 //End turn button function
 function endTurn() {
         if (clientCharacter == currentCharacter && state == 'inProgress') {
-                socket.emit('nextTurn');
+                madeChoice = false;
+				socket.emit('nextTurn');
         }
 }
 
@@ -1021,10 +1027,13 @@ function makeGuess() {
         if (details[currentCharacter].room == -1) {
                 alert("You must be in a room to make a guess");
         }
-        else {
+        else if (!madeChoice){
                 choiceName = "guess";
                 makingChoice = true;
         }
+		else {
+			alert("You can only make one accusation/guess a turn");
+		}
 }
 
 //Make accusation button function
@@ -1032,10 +1041,13 @@ function makeAccusation() {
         if (details[currentCharacter].room == -1) {
                 alert("You must be in a room to make an accusation");
         }
-        else {
+        else if(!madeChoice) {
                 choiceName = "accusation";
                 makingChoice = true;
         }
+		else {
+			alert("You can only make one accusation/guess a turn");
+		}
 }
 
 
