@@ -550,7 +550,7 @@ function draw()
                 guessB.hide();
 				
                 // Highlight the grid if the player can move
-                if (mouseX < 480 && mouseY < 480 && currentCharacter == clientCharacter && !clientMoved) {
+                if (10 < mouseX && mouseX < 490 && 10 < mouseY && mouseY< 490 && currentCharacter == clientCharacter && !clientMoved) {
                         if (details[currentCharacter].i > -1) {
                                 var x = Math.floor((mouseX-10) / 480 * columns);
                                 var y = Math.floor((mouseY-10) / 480 * rows);
@@ -849,7 +849,7 @@ function mouseClicked()
                         }
                 }
 		// Picking cards for an accusation or a guess
-        } else {
+        } else if (makingChoice) {
                 // Choose cards
                 if (choice[0].length < 1) {
                         // Chosing a suspect
