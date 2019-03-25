@@ -19,13 +19,26 @@
   		<div id = "chat-window">
   			<div id = "output"></div>
   		</div>
-  		<input id = "handle" type = "text" placeholder = "Handle" />
-  		<input id = "message" type = "text" placeholder = "Message" />
-  		<button id = "send" >Send</button>
-  	</div>
+  		<input id = "first" type = "text" onkeyup = "success()" placeholder = "Name" />
+  		<input id = "second" type = "text" onkeyup = "success()" placeholder = "...Enter Message" />
+  		<button id ="send" disabled>Send</button>
+  		</div>
 	  	<div id = "quit">
   		<a href="/">&larr; Quit to main menu</a>
   	</div>
+  	<script type="text/javascript">
+    function success() {
+	 var name = document.getElementById("first").value;
+     var message = document.getElementById("second").value;
+
+	 if (name === "" || message === "") { 
+      document.getElementById('send').disabled = true; 
+   } else { 
+      document.getElementById('send').disabled = false;
+   }
+}
+</script
+  	
   	
   </body>
 </html>

@@ -54,22 +54,26 @@ const roomNum = 9;
 var rooms = new Array(roomNum);
 
 window.onload = function(){
-	var message = document.getElementById('message');
-	handle = document.getElementById('handle');
-	sendB = document.getElementById('send');
-	output = document.getElementById('output');
-	
-	sendB.addEventListener('click', function(){
+	//Query DOM
+	var message = document.getElementById('second');
+		handle = document.getElementById('first');
+		btn = document.getElementById('send');
+		output = document.getElementById('output');
+
+	//Emit events
+		
+	btn.addEventListener('click', function(){
 		socket.emit('chat', {
 			message: message.value,
 			handle: handle.value
 		});
 	});
-};
+	};
 
-socket.on('chat', function(data){
-	output.innerHTML += '<p><strong>' + data.handle + ': <strong>' + data.message + '</p>';
-});
+	//Listen for events
+	socket.on('chat', function(data){
+		output.innerHTML += '<p><strong>' + data.handle + ': <strong>' + data.message + '</p>';
+	});
 
 function Coordinate(i, j) 
 {
