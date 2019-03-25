@@ -186,62 +186,65 @@ function Room(name, index, doors, x1, y1, x2, y2)
         };
 		//Fill room with players
         this.show = function()
-        {
-                if (this.name == "Server Room") {
-                        if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
-                                gridGraphic.stroke(0);
-                                gridGraphic.rect((1 + this.characters.indexOf(currentCharacter)) * (gridWidth / columns), 2 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
-                        };
-                } else if (this.name == "Seminar Room") {
-                        if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
-                                gridGraphic.stroke(0);
-                                gridGraphic.rect((10 + this.characters.indexOf(currentCharacter)) * (gridWidth / columns), 2 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
-                        };
-                } else if (this.name == "Study Room") {
-                        if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
-                                gridGraphic.stroke(0);
-                                gridGraphic.rect((18 + this.characters.indexOf(currentCharacter)) * (gridWidth / columns), 3 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
-                        };
-                } else if (this.name == "Main Hall") {
-                        if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
-                                gridGraphic.stroke(0);
-                                gridGraphic.rect((1 + this.characters.indexOf(currentCharacter)) * (gridWidth / columns), 8 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
-                        };
-                } else if (this.name == "Convenors Office") {
-                        if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
-                                gridGraphic.stroke(0);
-                                gridGraphic.rect((18 + this.characters.indexOf(currentCharacter))* (gridWidth / columns), 12 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
-                        };
-                } else if (this.name == "Library") {
-                        if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
-                                gridGraphic.stroke(0);
-                                gridGraphic.rect((1 + this.characters.indexOf(currentCharacter)) * (gridWidth / columns), 14 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
-                        };
-                } else if (this.name == "Admin Office") {
-                        if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
-                                gridGraphic.stroke(0);
-                                gridGraphic.rect((1 + this.characters.indexOf(currentCharacter))* (gridWidth / columns), 21 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
-                        };
-                } else if (this.name == "Lecture Theatre") {
-                        if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
-                                gridGraphic.stroke(0);
-                                gridGraphic.rect((10 + this.characters.indexOf(currentCharacter)) * (gridWidth / columns), 20 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
-                        };
-                } else if (this.name == "Computer Suite") {
-                        if (this.characters.indexOf(currentCharacter) > -1) {
-                                gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b);
-                                gridGraphic.stroke(0);
-                                gridGraphic.rect((19 + this.characters.indexOf(currentCharacter)) * (gridWidth / columns), 21 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
-                        };
-                }
+        {		
+				for (var i = 0; i < details.length; i++) {	
+				
+						if (this.name == "Server Room") {
+								if (this.characters.indexOf(i) > -1) {
+										gridGraphic.fill(details[i].r, details[i].g, details[i].b);
+										gridGraphic.stroke(0);
+										gridGraphic.rect((1 + i) * (gridWidth / columns), 2 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+								};	
+						} else if (this.name == "Seminar Room") {
+								if (this.characters.indexOf(i) > -1) {
+										gridGraphic.fill(details[i].r, details[i].g, details[i].b);
+										gridGraphic.stroke(0);
+										gridGraphic.rect((10 + i) * (gridWidth / columns), 2 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+								};	
+						} else if (this.name == "Study Room") {
+								if (this.characters.indexOf(i) > -1) {
+										gridGraphic.fill(details[i].r, details[i].g, details[i].b);
+										gridGraphic.stroke(0);
+										gridGraphic.rect((18 + i) * (gridWidth / columns), 3 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+								};		
+						} else if (this.name == "Main Hall") {
+								if (this.characters.indexOf(i) > -1) {
+										gridGraphic.fill(details[i].r, details[i].g, details[i].b);
+										gridGraphic.stroke(0);
+										gridGraphic.rect((1 + i) * (gridWidth / columns), 8 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+								};
+						} else if (this.name == "Convenors Office") {
+								if (this.characters.indexOf(i) > -1) {
+										gridGraphic.fill(details[i].r, details[i].g, details[i].b);
+										gridGraphic.stroke(0);
+										gridGraphic.rect((18 + i) * (gridWidth / columns), 12 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+								};
+						} else if (this.name == "Library") {
+								if (this.characters.indexOf(i) > -1) {
+										gridGraphic.fill(details[i].r, details[i].g, details[i].b);
+										gridGraphic.stroke(0);
+										gridGraphic.rect((1 + i) * (gridWidth / columns), 14 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+								};
+						} else if (this.name == "Admin Office") {
+								if (this.characters.indexOf(i) > -1) {
+										gridGraphic.fill(details[i].r, details[i].g, details[i].b);
+										gridGraphic.stroke(0);
+										gridGraphic.rect((1 + i) * (gridWidth / columns), 21 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+								};
+						} else if (this.name == "Lecture Theatre") {
+								if (this.characters.indexOf(i) > -1) {
+										gridGraphic.fill(details[i].r, details[i].g, details[i].b);
+										gridGraphic.stroke(0);
+										gridGraphic.rect((10 + i) * (gridWidth / columns), 20 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+								};
+						} else if (this.name == "Computer Suite") {
+								if (this.characters.indexOf(i) > -1) {
+										gridGraphic.fill(details[i].r, details[i].g, details[i].b);
+										gridGraphic.stroke(0);
+										gridGraphic.rect((19 + i) * (gridWidth / columns), 21 * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+								};
+						}
+				}
         };
 }
 // Load socket functions
@@ -440,7 +443,7 @@ function startGame(players)
         }
         // (name, index, doors, x1, y1, x2, y2)
         rooms[0] = new Room("Server Room", 0, 1, 6, 4);
-        rooms[1] = new Room("Seminar room", 1, 2, 8, 4, 11, 7);
+        rooms[1] = new Room("Seminar Room", 1, 2, 8, 4, 11, 7);
         rooms[2] = new Room("Study Room", 2, 1, 17, 7);
         rooms[3] = new Room("Main Hall", 3, 2, 7, 8, 3, 11);        
         rooms[4] = new Room("Convenors Office", 4, 2, 17, 8, 15, 13);
@@ -508,9 +511,9 @@ function createBoard()
         
         //Middle 
         horizontalObstacleLine(board[9][8], board[13][8]);
-        horizontalObstacleLine(board[9][13], board[13][13]);
-        verticalObstacleLine(board[13][8], board[13][13]);        
-        verticalObstacleLine(board[9][8], board[9][13]);       
+        horizontalObstacleLine(board[9][14], board[13][14]);
+        verticalObstacleLine(board[13][8], board[13][14]);        
+        verticalObstacleLine(board[9][8], board[9][14]);       
 		     
  }
  
@@ -562,7 +565,7 @@ function draw()
                         } else if (details[currentCharacter].i == -1) {
                                 var x = Math.floor((mouseX-10) / 480 * columns);
                                 var y = Math.floor((mouseY-10) / 480 * rows);
-                                if (rooms[details[currentCharacter].room].pathFrom(x, y, roll -1) && !board[x][y].obstacle) {
+                                if (rooms[details[currentCharacter].room].pathFrom(x, y, roll) && !board[x][y].obstacle) {
                                         gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b, 72);
                                         gridGraphic.rect(x * (gridWidth / columns), y * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
                                 }
@@ -592,7 +595,7 @@ function draw()
                         guessB.show();
                 }
 				
-				//Rooms
+				//Show players in rooms
 				for (var i = 0; i < roomNum; i++) {
                         rooms[i].show();
                 }
@@ -693,12 +696,12 @@ function drawBoardDetails()
         gridGraphic.rect(17*20, 0 -1, 7*20 -1, 7*20-1);
         // Middle
         gridGraphic.stroke(0);
-        gridGraphic.line(190,8*20,280,160);
-        gridGraphic.line(280,160,280,280);
-        gridGraphic.line(280,280,180,280);
-        gridGraphic.line(180,280,180,160);      
+        gridGraphic.line(190,160,280,160);
+        gridGraphic.line(280,160,280,300);
+        gridGraphic.line(280,300,180,300);
+        gridGraphic.line(180,300,180,160);      
         gridGraphic.fill(179,198,231);
-        gridGraphic.rect(9*20 , 8*20, 5*20-1, 6*20-1);
+        gridGraphic.rect(9*20 , 8*20, 5*20-1, 7*20-1);
         gridGraphic.strokeWeight(1);
         // Main Hall
         gridGraphic.fill(0,0,0);
@@ -764,13 +767,13 @@ function drawBoardDetails()
         gridGraphic.stroke(0);
         gridGraphic.text("Server Room", 10, 20);
         gridGraphic.text("Seminar Room", 200, 20);
-        gridGraphic.text("Study Room", 400, 20);
+        gridGraphic.text("Study Room", 380, 20);
         gridGraphic.text("Main Hall", 10, 140);
-        gridGraphic.text("Convenors Office", 360, 210);
-        gridGraphic.text("Library", 10, 270);
-        gridGraphic.text("Admin Office", 10, 415);
+        gridGraphic.text("Convenors Office", 380, 210);
+        gridGraphic.text("Library", 10, 265);
+        gridGraphic.text("Admin Office", 10, 410);
         gridGraphic.text("Lecture Theatre", 200, 360);
-        gridGraphic.text("Computer Suite", 370, 415);
+        gridGraphic.text("Computer Suite", 375, 410);
         // Doors
         gridGraphic.stroke(255,216,101);
         gridGraphic.strokeWeight(4);
@@ -1003,7 +1006,7 @@ function enterRoom() {
 			alert("You have already moved!");
 		}
 	}
-    else if (details[currentCharacter].room == 0) {
+    else if (details[currentCharacter].room > -1) {
             alert("You are already in a room!");
     }
 }

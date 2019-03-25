@@ -395,9 +395,9 @@ function createBoard()
         
         //Middle 
         horizontalObstacleLine(board[9][8], board[13][8]);
-        horizontalObstacleLine(board[9][13], board[13][13]);
-        verticalObstacleLine(board[13][8], board[13][13]);        
-        verticalObstacleLine(board[9][8], board[9][13]); 
+        horizontalObstacleLine(board[9][14], board[13][14]);
+        verticalObstacleLine(board[13][8], board[13][14]);        
+        verticalObstacleLine(board[9][8], board[9][14]); 
 }
 
 //Functions to draw room edges
