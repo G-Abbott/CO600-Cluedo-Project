@@ -51,6 +51,12 @@ io.sockets.on('connection', function(socket)
                 }
                 io.sockets.emit('connectionUpdate', socketConnections);
                 arrayRemove(socketIds, socket.id);
+                if (status == 'inProgress') {
+                        io.sockets.emit('disconnectLog');
+                        playersOut.push(currentCharacter);
+                        nextTurn();
+                        io.sockets.emit('connectionUpdate', socketConnections);
+                }
                 console.log('Connections: ' + socketConnections);
         });
         

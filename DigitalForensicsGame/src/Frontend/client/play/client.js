@@ -258,6 +258,11 @@ function preload()
         {
                 state = newState;
         });
+
+        socket.on('disconnectLog', function()
+        {
+                window.alert(details[currentCharacter].name + ' has left the game');
+        });
 		
         socket.emit('gatherStatus');
 		
@@ -420,6 +425,10 @@ function setup()
         guessB.position(510, 400 + clientCards.length * 20 + 50);
         guessB.mousePressed(makeGuess);
         guessB.hide();
+        quitB = createButton('Quit to main menu');
+        quitB.position(28, 524);
+        quitB.mousePressed(quit);
+        quitB.show();
         // Create Game board
         createBoard();
         console.log("Setup complete")
@@ -1057,6 +1066,14 @@ function makeAccusation() {
 		}
 }
 
+function quit() {
+       if (currentCharacter!=clientCharacter) {
+                alert("It must be your turn for you to quit");
+        }
+        else {
+                window.location = "http://localhost:4444/";
+        }
+}
 
 //To do - Functions for movement arrow keys
 /*
