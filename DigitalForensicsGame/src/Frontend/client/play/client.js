@@ -1,6 +1,17 @@
+//References
+//[1]
+/********************************************************************
+
+Author : Tom Kuson
+Date : 12/02/2018
+Title: cluedo-js
+Code version : 1.0.0
+Web address : https://github.com/tjkuson/cluedo-js
+
+**********************************************************************/
 p5.dom;
 
-// Declarations
+//Declarations
 //Entire page
 var canvas = undefined;
 const canvasWidth = 490 + 480 ;
@@ -53,15 +64,14 @@ var choosing = false;
 const roomNum = 9;
 var rooms = new Array(roomNum);
 
+//Chat events
 window.onload = function(){
-	//Query DOM
+
 	var message = document.getElementById('second');
 		handle = document.getElementById('first');
 		btn = document.getElementById('send');
 		output = document.getElementById('output');
 
-	//Emit events
-		
 	btn.addEventListener('click', function(){
 		socket.emit('chat', {
 			message: message.value,
@@ -70,10 +80,11 @@ window.onload = function(){
 	});
 	};
 
-	//Listen for events
 	socket.on('chat', function(data){
 		output.innerHTML += '<p><strong>' + data.handle + ': <strong>' + data.message + '</p>';
 	});
+
+//Reference[1]. Coordinate, Character and Room functions. Some small changes to variable names and values.
 
 function Coordinate(i, j) 
 {
@@ -428,6 +439,7 @@ function setup()
         createBoard();
         console.log("Setup complete")
 }
+
 function startGame(players)
 {
         characters = players;
@@ -526,6 +538,7 @@ function createBoard()
  }
  
 //Functions to draw room edges
+//Reference[1]
 function horizontalObstacleLine(start, end) 
 {
         var length = end.i - start.i
@@ -627,6 +640,7 @@ function draw()
 		
 		//Client actions
         if (state == "inProgress" && gotClientDetails) {
+        		//To-do
                 /*
                 buttonUp.show();
                 buttonDown.show();
@@ -828,6 +842,7 @@ function drawBoardDetails()
 }
 
 //Mouse click functions, used instead of buttons for moving on the board and selecting cards
+//Reference[1] - Updated for our new board design
 function mouseClicked() 
 {
 		//Movement on board
@@ -897,6 +912,7 @@ function arrayContains(array, element)
 }
 
 // Pathfinding algorithm
+//Reference[1]
 function path(start, end) 
 {
         // Initialise pathfinding variables
@@ -944,7 +960,6 @@ function path(start, end)
         // No path found
         return 100;
 }
-
 function heuristic (a, b)
 {
         return abs(a.i-b.i) + abs(a.j-a.j);

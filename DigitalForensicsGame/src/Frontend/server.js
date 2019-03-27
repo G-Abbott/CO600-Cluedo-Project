@@ -1,3 +1,15 @@
+//References
+//[1]
+/********************************************************************
+
+Author : Tom Kuson
+Date : 12/02/2018
+Title: cluedo-js
+Code version : 1.0.0
+Web address : https://github.com/tjkuson/cluedo-js
+
+**********************************************************************/
+
 //server.js is the file that Node.js will execute and listen to requests.
 
 //Import express
@@ -30,6 +42,7 @@ var status = "notReady";
 var clientMoved = false;
 var readyClients = 0;
 
+//Reference[1] - Changes to fix issues and add functionality
 io.sockets.on('connection', function(socket)
 {
         // Connection
@@ -235,7 +248,7 @@ var roll = 6;
 var currentCharacter = 0;
 var characters = undefined;
 var details = undefined;
-var envelope = ['murderer', 'method', 'room'];
+var envelope = ['character', 'method', 'room'];
 var suspectCards = ['Student', 'Lecturer', 'Administrator', 'Technician'];
 var methodCards = ['Data Theft', 'Fraud', 'Malware', 'Brute Force', 'Man-in-the-middle', 'Phishing'];
 var roomCards = ['Server Room', 'Seminar Room', 'Study Room', 'Main Hall', 'Convenors Office', 'Library', 'Admin Office', 'Lecture Theatre', 'Computer Suite'];
@@ -245,6 +258,7 @@ var playersOut = [""];
 const roomNum = 9;
 var rooms = new Array(roomNum);
 
+//Reference[1] - Same as client.js for Coordinate, character and room functions
 function Coordinate(i, j) 
 {
         // Coordinate position
@@ -341,6 +355,7 @@ function Room(name, index, doors, x1, y1, x2, y2)
                 }
         };
 };
+
 // Create new game board
 function createBoard() 
 {
@@ -410,6 +425,7 @@ function createBoard()
 }
 
 //Functions to draw room edges
+//Reference[1]
 function horizontalObstacleLine(start, end) 
 {
         var length = end.i - start.i
@@ -417,7 +433,6 @@ function horizontalObstacleLine(start, end)
                 board[start.i + i][start.j].obstacle = true;
         }
 }
-
 function verticalObstacleLine(start, end) 
 {
         var length = end.j - start.j
@@ -427,6 +442,7 @@ function verticalObstacleLine(start, end)
 }
 
 //Start game
+//Reference[1] - The base functions of cluedo, changed variables and values to support our new board design and theme
 function startGame(players)
 {
         // Depending on number of connections, create that many players and set their positions
@@ -462,7 +478,7 @@ function startGame(players)
         envelope[0] = suspectCards.splice(0, 1);
         envelope[1] = methodCards.splice(0, 1);
         envelope[2] = roomCards.splice(0, 1);
-        console.log("Murderer: " + envelope[0]);
+        console.log("Character: " + envelope[0]);
         console.log("Weapon: " + envelope[1]);
         console.log("Room: " + envelope[2]);
 		
@@ -562,6 +578,7 @@ function nextCharacter()
 }
 
 // Pathfinding algorithm
+//Reference[1]
 function path(start, end) 
 {
         // Initialise pathfinding variables
