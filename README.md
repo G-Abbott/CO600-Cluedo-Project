@@ -6,12 +6,13 @@ Our game is a recreation of the original game of Cluedo base off of Kent Univers
 
 For a base we used an existing version of a Javascript cluedo game from this git repository by Tom Kuson, made in Feburary 2018
 
-/********************************************************
+/********************************************************************
 - Author : Tom Kuson
 - Date : 12/02/2018
 - Title: cluedo-js
 - Code version : 1.0.0
 - Web address : https://github.com/tjkuson/cluedo-js
-********************************************************/
+
+**********************************************************************/
 
 This gave us a basic layout and game board to work from however it lacked the features that we wanted and it contained various bugs and issues.
