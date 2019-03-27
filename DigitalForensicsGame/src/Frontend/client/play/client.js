@@ -191,8 +191,7 @@ function Room(name, index, doors, x1, y1, x2, y2)
 		//Fill room with players
         this.show = function()
         {		
-				for (var i = 0; i < details.length; i++) {	
-				
+				for (var i = 0; i < details.length; i++) {		
 						if (this.name == "Server Room") {
 								if (this.characters.indexOf(i) > -1) {
 										gridGraphic.fill(details[i].r, details[i].g, details[i].b);
@@ -326,11 +325,7 @@ function preload()
 		
         socket.on('accusationCorrect', function()
         {
-                window.alert(details[currentCharacter].name + ' wins the game!');
-                makingChoice = false;
-				state = "notReady";
-				status = "not ready";
-
+                window.alert(details[currentCharacter].name + ' wins the game!\nRestart the server to play again!');
         });
 		
         socket.on('accusationIncorrect', function()
@@ -968,6 +963,7 @@ function arrayRemove(array, item)
 function endTurn() {
         if (clientCharacter == currentCharacter && state == 'inProgress') {
                 madeChoice = false;
+                makingChoice = false;
 				socket.emit('nextTurn');
         }
 }
@@ -975,8 +971,10 @@ function endTurn() {
 //Enter room button function
 function enterRoom() {
 	if (details[currentCharacter].i > -1) {
+				if (clientMoved) {
+						alert("You have already moved!");
                 // Server Room
-                if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[6][4]) <= 0) { 
+                } else if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[6][4]) <= 0) { 
                         socket.emit('enterRoom', currentCharacter, 'Server Room', 0);
                 // Seminar Room
                 } else if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[8][4]) <= 0) { 
@@ -1015,9 +1013,6 @@ function enterRoom() {
                 } else if (!clientMoved){
                         alert("You must be by a room door to enter a room");
                 }
-		else {
-			alert("You have already moved!");
-		}
 	}
     else if (details[currentCharacter].room > -1) {
             alert("You are already in a room!");
@@ -1067,7 +1062,7 @@ function makeAccusation() {
 }
 
 function quit() {
-       if (currentCharacter!=clientCharacter) {
+       if (currentCharacter!=clientCharacter && state == "inProgress") {
                 alert("It must be your turn for you to quit");
         }
         else {

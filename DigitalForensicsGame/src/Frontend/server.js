@@ -100,7 +100,7 @@ io.sockets.on('connection', function(socket)
         socket.on('moveCharacter', function(index, x, y)
         {
                 console.log('Moving ' + details[index].name + ' to  (' + x + ', ' + y + ')');
-                if ( path(board[details[currentCharacter].i][details[currentCharacter].j] , board[x][y]) <= roll && board[x][y].obstacle == false && socket.id == details[currentCharacter].socketId && !clientMoved) {
+                if ( path(board[details[currentCharacter].i][details[currentCharacter].j] , board[x][y]) <= roll && board[x][y].obstacle == false && !clientMoved) {
                         // Empty the coordinate
                         board[details[index].i][details[index].j].details = -1;
                         // Set old coordinate obstacle to false
@@ -112,13 +112,12 @@ io.sockets.on('connection', function(socket)
                         board[x][y].details = index;
                         // Set new coordinate obstacle value to true
                         board[x][y].obstacle = true;
-                        console.log('Move committed')
+                        console.log('Move committed');
                         clientMoved = true;
                         io.sockets.emit('clientMoveCharacter', index, x, y);
                 } else {
-                        console.log('Move denied')
+                        console.log('Move denied');
                 }
-                console.log(playersOut)
         });
 		
         // Next turn
@@ -133,12 +132,16 @@ io.sockets.on('connection', function(socket)
                 if (suspect == envelope[0] && method == envelope[1] && room == envelope[2]) {
                         // Accusation correct!
                         io.sockets.emit('accusationCorrect');
-                        console.log(socket + ' (' + details[currentCharacter].name + ') has won!');
+                        console.log(details[currentCharacter].name + ' has won!');
+               			for (var i = 0; i < characters; i++) {
+               				playersOut.push(i);
+               			}
                 } else {
                         // Accusation incorrect...
                         io.sockets.emit('accusationIncorrect');
                         playersOut.push(currentCharacter);
-                        console.log(socket.id + ' (' + details[currentCharacter].name + ') made a false accusation!');
+                        nextTurn();
+                        console.log(details[currentCharacter].name + ' made a false accusation!');
                 }
         });
         // Guess
