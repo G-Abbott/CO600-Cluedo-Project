@@ -598,11 +598,14 @@ function draw()
                 for (var i = 0; i < characters; i++) {
                         ellipseMode(CENTER);
                         if (i == currentCharacter) {
-                                characterGraphic.fill(details[i].r, details[i].g, details[i].b);
+                                characterGraphic.fill(details[i].r, details[i].g, details[i].b);								
                         } else {
                                 characterGraphic.fill(details[i].r, details[i].g, details[i].b, 72);
                         }
                         characterGraphic.ellipse((12 + 24 * i), 12, 20);
+						characterGraphic.fill(255);						
+						characterGraphic.text(details[i].name.charAt(0).toUpperCase(),(8 + 24 * i), 17);
+						
                 }
                 //Print out whos turn it is
                 characterGraphic.fill(255);
