@@ -19,4 +19,6 @@ This gave us a basic layout and game board to work from however it lacked the fe
 
 To start the server open the frontend folder in command line and type 'node server'
 
-To play navigate within a browser to the address:
+To play navigate within a browser to the address: localhost:4444
+
+Any issues or to restart the game, please restart the server.
