@@ -149,6 +149,8 @@ function Character(name, red, green, blue, i, j)
                 gridGraphic.noStroke;
                 gridGraphic.strokeWeight(0);
                 gridGraphic.rect(this.i * (gridWidth / columns), this.j * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+				gridGraphic.fill(0);
+				gridGraphic.text(this.name.charAt(0).toUpperCase(), this.i * (gridWidth / columns)+5, this.j * (gridHeight / rows)+15);
         }
 }
 function Room(name, index, doors, x1, y1, x2, y2)
@@ -581,14 +583,14 @@ function draw()
                                 var y = Math.floor((mouseY-10) / 480 * rows);
                                 if (path(board[details[currentCharacter].i][details[currentCharacter].j] , board[x][y]) <= roll && board[x][y].obstacle == false) {
                                         gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b, 72);
-                                        gridGraphic.rect(x * (gridWidth / columns), y * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+                                        gridGraphic.rect(x * (gridWidth / columns), y * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);										
                                 }
                         } else if (details[currentCharacter].i == -1) {
                                 var x = Math.floor((mouseX-10) / 480 * columns);
                                 var y = Math.floor((mouseY-10) / 480 * rows);
                                 if (rooms[details[currentCharacter].room].pathFrom(x, y, roll) && !board[x][y].obstacle) {
                                         gridGraphic.fill(details[currentCharacter].r, details[currentCharacter].g, details[currentCharacter].b, 72);
-                                        gridGraphic.rect(x * (gridWidth / columns), y * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);
+                                        gridGraphic.rect(x * (gridWidth / columns), y * (gridHeight / rows), (gridWidth / columns) - 1, (gridHeight / rows) - 1);										
                                 }
                         }
                 }
