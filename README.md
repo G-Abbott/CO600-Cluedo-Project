@@ -17,7 +17,7 @@ For a base we used an existing version of a Javascript cluedo game from this git
 
 This gave us a basic layout and game board to work from however it lacked the features that we wanted and it contained various bugs and issues.
 
-/***********Running the Server*******************/
+*************Running the Server*************
 
 Our current implementation runs on Kent University's raptor server however this version can be run locally
 
